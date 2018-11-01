@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_title">Quizzy !</string>
+    <string name="app_name">Quizzy</string>
+    <string name="category_animals">Animals</string>
+    <string name="category_politics">Politics</string>
+    <string name="category_history">History</string>
+    <string name="category_geography">Geo</string>
+    <string name="category_books">Books</string>
+    <string name="category_film">Film</string>
+    <string name="category_music">Music</string>
+    <string name="category_tv">TV</string>
+    <string name="category_science">Science</string>
+    <string name="main_pick_a_category">Pick a category</string>
+    <string name="a_answer">A</string>
+    <string name="b_answer">B</string>
+    <string name="d_answer">D</string>
+    <string name="true_answer">True</string>
+    <string name="false_answer">False</string>
+    <string name="question_text">Dummy Text</string>
+    <string name="play_again">Play again</string>
+    <string name="back_to_home">Back to home</string>
+    <string name="result">Your result:</string>
+    <string name="no_more_data">Sorry, no more data available, please choose other category</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_name">Fullname</string>
+    <string name="btn_login">LOGIN</string>
+    <string name="btn_register">REGISTER</string>
+    <string name="btn_link_to_register">Not a member? Sign up now.</string>
+    <string name="btn_link_to_login">Already registred! Login Me.</string>
+    <string name="welcome">Welcome</string>
+    <string name="btn_logout">LOGOUT</string>
+    <string name="name">Fullname</string>
+</resources>
