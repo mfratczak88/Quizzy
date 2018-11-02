@@ -17,7 +17,7 @@
         android:fontFamily="monospace"
         android:text="C"
         android:textAllCaps="false"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/b_answer_button" />
@@ -31,7 +31,7 @@
         android:fontFamily="monospace"
         android:text="@string/d_answer"
         android:textAllCaps="false"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/c_answer_button" />
@@ -45,7 +45,7 @@
         android:fontFamily="monospace"
         android:text="@string/a_answer"
         android:textAllCaps="false"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -59,7 +59,7 @@
         android:fontFamily="monospace"
         android:text="@string/b_answer"
         android:textAllCaps="false"
-        android:textSize="24sp"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/a_answer_button" />

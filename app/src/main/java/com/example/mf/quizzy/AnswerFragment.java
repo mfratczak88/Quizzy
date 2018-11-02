@@ -1,7 +1,10 @@
 package com.example.mf.quizzy;
 
 import android.content.Context;
-import android.graphics.Color;
+
+import com.example.mf.quizzy.Listeners.onAnswerShownListener;
+import com.example.mf.quizzy.Listeners.onTimeOutListener;
+
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.mf.quizzy.Listeners.onAnsweredQuestionListener;
 import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
 
@@ -27,12 +29,13 @@ import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
-public abstract class AnswerFragment extends Fragment {
-    private final static int SLEEP_TIME = 300;
+public abstract class AnswerFragment extends Fragment implements onTimeOutListener {
+    private final static int SLEEP_TIME = 3000;
     protected List<Button> mButtons = new ArrayList<>();
-    private onAnsweredQuestionListener mOnAnsweredQuestionListener;
+    private onAnswerShownListener mOnAnswerShownListener;
     private Util mUtil = new AnswerFragment.Util();
     private Model mModel = ModelFactory.getFactory().getModel();
+    private Button mCorrectAnswerButton;
 
     protected abstract void extractButtonsFromView(View view);
 
@@ -47,10 +50,14 @@ public abstract class AnswerFragment extends Fragment {
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            setOnAnsweredQuestionListener((onAnsweredQuestionListener) context);
+            setOnAnswerShownListener((onAnswerShownListener) context);
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement onAnsweredQuestionListener");
+            throw new ClassCastException(context.toString() + "must implement onAnswerShownListener");
         }
+    }
+
+    public void setOnAnswerShownListener(onAnswerShownListener onAnswerShownListener) {
+        mOnAnswerShownListener = onAnswerShownListener;
     }
 
     @Override
@@ -64,9 +71,21 @@ public abstract class AnswerFragment extends Fragment {
         View view = inflater.inflate(getLayoutNumber(), container, false);
         extractButtonsFromView(view);
         setEventHandlersAndTextsForButtons();
+        setCorrectAnswerButton();
         return view;
     }
 
+    private void setCorrectAnswerButton() {
+        Iterator iterator = getButtonsIterator();
+        String correctAnswerText = mModel.getCurrentQuestionManager().getCorrectAnswer();
+        Button button;
+        while (iterator.hasNext()) {
+            button = (Button) iterator.next();
+            if (button.getText().toString().equals(correctAnswerText)) {
+                mCorrectAnswerButton = button;
+            }
+        }
+    }
 
     protected ArrayList<String> getAllAnswers() {
         return mModel.getCurrentQuestionManager().getAllAnswers();
@@ -74,62 +93,65 @@ public abstract class AnswerFragment extends Fragment {
 
     protected void checkAnswerAndNotifyListener(int buttonNumber) {
         //@todo: create new class here obviously
-        Button correctAnswerButton = getCorrectAnswerButton();
+        mOnAnswerShownListener.stopClock();
         Button chosenAnswerButton = mButtons.get(buttonNumber);
 
-        boolean answerWasCorrect = chosenAnswerButton.getText().equals(correctAnswerButton.getText());
-        Command listenerCallBackCommand = createListenerCallBackObject(chosenAnswerButton.getText().toString(), answerWasCorrect);
-        HashMap<Button, Integer> greenButton = mUtil.getButtonColorHashMap(correctAnswerButton, Color.GREEN);
+        boolean answerWasCorrect = chosenAnswerButton.getText().equals(mCorrectAnswerButton.getText());
+        Command listenerCallBackCommand = createOnAnswerGivenCallBackCommand(chosenAnswerButton.getText().toString(), answerWasCorrect);
 
         if (answerWasCorrect) {
-            getShowAnswerTask(listenerCallBackCommand)
-                    .execute(greenButton);
+            getShowAnswerTaskForCommand(listenerCallBackCommand)
+                    .execute(getGreenButtonHashMap());
         } else {
-            getShowAnswerTask(listenerCallBackCommand)
-                    .execute(greenButton, mUtil.getButtonColorHashMap(chosenAnswerButton, Color.RED));
+            getShowAnswerTaskForCommand(listenerCallBackCommand)
+                    .execute(getGreenButtonHashMap(), getRedButtonHashMap(chosenAnswerButton));
         }
     }
 
-    private Command createListenerCallBackObject(String chosenAnswerButton, boolean wasItCorrect) {
+    private HashMap<Button, Integer> getGreenButtonHashMap() {
+        return mUtil.getButtonDrawableHashMap(mCorrectAnswerButton, R.drawable.rounded_button_true);
+    }
+
+    private HashMap<Button, Integer> getRedButtonHashMap(Button incorrectAnswerButton) {
+        return mUtil.getButtonDrawableHashMap(incorrectAnswerButton, R.drawable.rounded_button_false);
+    }
+
+    private Command createOnAnswerGivenCallBackCommand(String chosenAnswerButton, boolean wasItCorrect) {
         Object[] args = {chosenAnswerButton, wasItCorrect};
-        Method[] methods = getOnAnsweredQuestionListener().getClass().getMethods();
+        Method[] methods = mOnAnswerShownListener.getClass().getMethods();
         Method methodName;
         for (Method method : methods) {
             if (method.getName().contains("onAnswerGiven")) { //todo : change this hideous hardcode
                 methodName = method;
-                return new ListenerNotifierCommand(getOnAnsweredQuestionListener(), methodName, args);
+                return new ListenerNotifierCommand(mOnAnswerShownListener, methodName, args);
             }
         }
         return null;
     }
 
-    private AsyncTask getShowAnswerTask(Command command) {
+    private AsyncTask getShowAnswerTaskForCommand(Command command) {
         return new ShowAnswerAsyncTask(command);
-    }
-
-    protected Button getCorrectAnswerButton() {
-        Iterator iterator = getButtonsIterator();
-        String correctAnswerText = mModel.getCurrentQuestionManager().getCorrectAnswer();
-        Button button;
-        while (iterator.hasNext()) {
-            button = (Button) iterator.next();
-            if (button.getText().toString().equals(correctAnswerText)) {
-                return button;
-            }
-        }
-        return null;
     }
 
     protected Iterator getButtonsIterator() {
         return mButtons.iterator();
     }
 
-    private onAnsweredQuestionListener getOnAnsweredQuestionListener() {
-        return mOnAnsweredQuestionListener;
+    @Override
+    public void onTimeOut() {
+        new ShowAnswerAsyncTask(createOnAnswerShownCallBackCommand()).execute(getGreenButtonHashMap());
     }
 
-    private void setOnAnsweredQuestionListener(onAnsweredQuestionListener onAnsweredQuestionListener) {
-        mOnAnsweredQuestionListener = onAnsweredQuestionListener;
+    private Command createOnAnswerShownCallBackCommand() {
+        Method[] methods = mOnAnswerShownListener.getClass().getMethods();
+        Method methodName;
+        for (Method method : methods) {
+            if (method.getName().contains("onAnswerShown")) { //todo : change this hideous hardcode
+                methodName = method;
+                return new ListenerNotifierCommand(mOnAnswerShownListener, methodName, null);
+            }
+        }
+        return null;
     }
 
     private class ShowAnswerAsyncTask extends AsyncTask<Object, Void, Void> {
@@ -163,12 +185,12 @@ public abstract class AnswerFragment extends Fragment {
             }
         }
 
-        private void colorSingleButton(final Button button, final int color) {
+        private void colorSingleButton(final Button button, final int background) {
             if (isAdded()) {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        button.setBackgroundColor(color);
+                        button.setBackground(getResources().getDrawable(background));
                     }
                 });
             }
@@ -196,11 +218,11 @@ public abstract class AnswerFragment extends Fragment {
     }
 
     private class ListenerNotifierCommand implements Command {
-        private onAnsweredQuestionListener mReceiver;
+        private onAnswerShownListener mReceiver;
         private Method mMethod;
         private Object mArgs[];
 
-        private ListenerNotifierCommand(onAnsweredQuestionListener receiver, Method method, Object[] args) {
+        private ListenerNotifierCommand(onAnswerShownListener receiver, Method method, Object[] args) {
             this.mReceiver = receiver;
             mMethod = method;
             this.mArgs = args;
@@ -217,9 +239,9 @@ public abstract class AnswerFragment extends Fragment {
     }
 
     private class Util {
-        private HashMap<Button, Integer> getButtonColorHashMap(Button button, int color) {
+        private HashMap<Button, Integer> getButtonDrawableHashMap(Button button, int background) {
             HashMap<Button, Integer> hashMap = new HashMap<>();
-            hashMap.put(button, color);
+            hashMap.put(button, background);
             return hashMap;
         }
     }
