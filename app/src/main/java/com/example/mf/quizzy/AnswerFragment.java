@@ -43,7 +43,6 @@ public abstract class AnswerFragment extends Fragment {
     protected abstract int getWrapperLayoutId();
 
 
-    // add listeners;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
