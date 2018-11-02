@@ -74,22 +74,20 @@ public abstract class AnswerFragment extends Fragment {
     }
 
     protected void checkAnswerAndNotifyListener(int buttonNumber) {
-        //@todo: size this method down, into two maybe ?
+        //@todo: create new class here obviously
         Button correctAnswerButton = getCorrectAnswerButton();
         Button chosenAnswerButton = mButtons.get(buttonNumber);
 
         boolean answerWasCorrect = chosenAnswerButton.getText().equals(correctAnswerButton.getText());
         Command listenerCallBackCommand = createListenerCallBackObject(chosenAnswerButton.getText().toString(), answerWasCorrect);
+        HashMap<Button, Integer> greenButton = mUtil.getButtonColorHashMap(correctAnswerButton, Color.GREEN);
 
         if (answerWasCorrect) {
             getShowAnswerTask(listenerCallBackCommand)
-                    .execute(getUtil().getButtonColorHashMap(correctAnswerButton, Color.GREEN));
+                    .execute(greenButton);
         } else {
-            HashMap<Button, Integer> greenButton = getUtil().getButtonColorHashMap(correctAnswerButton, Color.GREEN);
-            HashMap<Button, Integer> redButton = getUtil().getButtonColorHashMap(chosenAnswerButton, Color.RED);
-            //(getUtil().getButtonColorHashMap(correctAnswerButton, Color.GREEN), getUtil().getButtonColorHashMap(chosenAnswerButton, Color.RED)
             getShowAnswerTask(listenerCallBackCommand)
-                    .execute(greenButton, redButton);
+                    .execute(greenButton, mUtil.getButtonColorHashMap(chosenAnswerButton, Color.RED));
         }
     }
 
@@ -100,7 +98,7 @@ public abstract class AnswerFragment extends Fragment {
         for (Method method : methods) {
             if (method.getName().contains("onAnswerGiven")) { //todo : change this hideous hardcode
                 methodName = method;
-                return new ListenerNotifier(getOnAnsweredQuestionListener(), methodName, args);
+                return new ListenerNotifierCommand(getOnAnsweredQuestionListener(), methodName, args);
             }
         }
         return null;
@@ -108,10 +106,6 @@ public abstract class AnswerFragment extends Fragment {
 
     private AsyncTask getShowAnswerTask(Command command) {
         return new ShowAnswerAsyncTask(command);
-    }
-
-    private Util getUtil() {
-        return mUtil;
     }
 
     protected Button getCorrectAnswerButton() {
@@ -202,12 +196,12 @@ public abstract class AnswerFragment extends Fragment {
         void executeCommand();
     }
 
-    private class ListenerNotifier implements Command {
+    private class ListenerNotifierCommand implements Command {
         private onAnsweredQuestionListener mReceiver;
         private Method mMethod;
         private Object mArgs[];
 
-        private ListenerNotifier(onAnsweredQuestionListener receiver, Method method, Object[] args) {
+        private ListenerNotifierCommand(onAnsweredQuestionListener receiver, Method method, Object[] args) {
             this.mReceiver = receiver;
             mMethod = method;
             this.mArgs = args;
