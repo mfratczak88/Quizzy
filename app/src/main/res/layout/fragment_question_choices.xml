@@ -18,7 +18,7 @@
         android:layout_marginTop="8dp"
         android:background="@drawable/rounded_button"
         android:fontFamily="monospace"
-        android:text="C"
+        android:text="X"
         android:textAllCaps="false"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
