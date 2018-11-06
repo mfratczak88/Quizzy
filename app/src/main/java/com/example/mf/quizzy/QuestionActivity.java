@@ -82,7 +82,7 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
             @Override
             public void run() {
                 try {
-                    for (int i = 0; i < 150; i++) { // 15 seconds
+                    for (int i = 0; i < 200; i++) { // 20 seconds
                         Thread.sleep(100);
                         mCountDownHandler.sendEmptyMessage(0);
                     }
@@ -193,5 +193,12 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
         } catch (Exception e) {
             Log.d(getClass().toString(), e.toString());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent startingActivityIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+        startActivity(startingActivityIntent);
+        finish();
     }
 }

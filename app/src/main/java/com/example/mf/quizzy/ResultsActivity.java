@@ -37,7 +37,7 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
     private void setResult(View view) {
-        TextView correctAnswersCount = (TextView) view.findViewById(R.id.id_correct_answers_count);
+        TextView correctAnswersCount = view.findViewById(R.id.id_correct_answers_count);
         correctAnswersCount.setText(getStringResult());
     }
 
