@@ -3,54 +3,117 @@ package com.example.mf.quizzy;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.util.Log;
 
-import com.example.mf.quizzy.Listeners.onAnsweredQuestionListener;
+import com.example.mf.quizzy.Listeners.*;
 import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
-import com.example.mf.quizzy.Model.QuestionBank;
 
-import java.lang.reflect.Method;
 import java.util.HashMap;
 
-public class QuestionActivity extends AppCompatActivity implements onAnsweredQuestionListener {
-    private Fragment mFragmentQuestionContent, mFragmentQuestionAnswers;
+import io.netopen.hotbitmapgg.library.view.RingProgressBar;
+
+public class QuestionActivity extends AppCompatActivity implements onAnswerShownListener {
     private HashMap<Integer, String> mAnswerHistory = new HashMap<>();
     private int mCorrectAnswers;
     private int mQuestionsCounter;
     private Model mModel;
+    private Handler mCountDownHandler;
+    private int mTimeProgress = 0;
+    private RingProgressBar mRingProgressBar;
+    private Thread mCountDownThread;
 
-    public QuestionActivity(){
+    public QuestionActivity() {
         mModel = ModelFactory.getFactory().getModel();
     }
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
+        mRingProgressBar = findViewById(R.id.id_progress_bar);
+        addFragmentManagers();
+        initializeCountDown();
+    }
 
+    private void addFragmentManagers() {
         FragmentManager fragmentManager = getSupportFragmentManager();
-        Fragment mFragmentQuestionContent = fragmentManager.findFragmentById(R.id.frame_question_content);
-        Fragment mFragmentQuestionAnswers = fragmentManager.findFragmentById(R.id.frame_question_answers);
+        Fragment fragmentQuestionContent = fetchFragmentQuestionContent();
+        Fragment fragmentQuestionAnswers = fetchFragmentAnswers();
 
-        if (mFragmentQuestionContent == null) {
-            mFragmentQuestionContent = new QuestionContentFragment();
-
+        if (fragmentQuestionContent == null) {
+            fragmentQuestionContent = new QuestionContentFragment();
             fragmentManager.beginTransaction()
-                    .add(R.id.frame_question_content, mFragmentQuestionContent)
+                    .add(R.id.frame_question_content, fragmentQuestionContent)
                     .commit();
         }
 
-        if (mFragmentQuestionAnswers == null) {
-            mFragmentQuestionAnswers = AnswersFragmentFactory.getInstance().getFragment();
-
+        if (fragmentQuestionAnswers == null) {
+            fragmentQuestionAnswers = AnswersFragmentFactory.getInstance().getFragment();
             fragmentManager.beginTransaction()
-                    .add(R.id.frame_question_answers, mFragmentQuestionAnswers)
+                    .add(R.id.frame_question_answers, fragmentQuestionAnswers)
                     .commit();
         }
+    }
+
+    private Fragment fetchFragmentQuestionContent() {
+        return getSupportFragmentManager().findFragmentById(R.id.frame_question_content);
+    }
+
+    private Fragment fetchFragmentAnswers() {
+        return getSupportFragmentManager().findFragmentById(R.id.frame_question_answers);
+    }
+
+    private void initializeCountDown() {
+        createCountDownHandler();
+        initializeProgressBar();
+        createCountDownThread();
+        mCountDownThread.start();
+    }
+
+    private void createCountDownThread() {
+        mCountDownThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    for (int i = 0; i < 200; i++) { // 20 seconds
+                        Thread.sleep(100);
+                        mCountDownHandler.sendEmptyMessage(0);
+                    }
+                } catch (InterruptedException e) {
+
+                }
+            }
+        });
+    }
+
+    private void createCountDownHandler() {
+        mCountDownHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                if (msg.what == 0) {
+                    if (mTimeProgress < 100) {
+                        mTimeProgress++;
+                        mRingProgressBar.setProgress(mTimeProgress);
+                    }
+                }
+            }
+        };
+    }
+
+    private void initializeProgressBar() {
+        mRingProgressBar.setOnProgressListener(new RingProgressBar.OnProgressListener() {
+            @Override
+            public void progressToComplete() {
+                onTimeOut();
+            }
+        });
     }
 
     public static Intent newIntent(Context context) {
@@ -59,22 +122,24 @@ public class QuestionActivity extends AppCompatActivity implements onAnsweredQue
 
     @Override
     public void onAnswerGiven(String answerGiven, boolean wasItCorrect) {
-        incrementQuestionCounter();
+        onAnswerShown();
         addAnswerToAnswersHistory(answerGiven);
         if (wasItCorrect) {
-            onCorrectAnswer();
-            return;
+            incrementCorrectAnswers();
         }
-        onIncorrectAnswer();
     }
 
-    private void onCorrectAnswer() {
-        incrementCorrectAnswers();
+    @Override
+    public void onAnswerShown() {
+        incrementQuestionCounter();
         moveToNextQuestion();
+        resetCounter();
+        initializeCountDown();
     }
 
-    private void onIncorrectAnswer() {
-        moveToNextQuestion();
+    @Override
+    public void stopClock() {
+        mCountDownThread.interrupt();
     }
 
     private void addAnswerToAnswersHistory(String answerGiven) {
@@ -90,12 +155,12 @@ public class QuestionActivity extends AppCompatActivity implements onAnsweredQue
     }
 
     private void replaceFragments() {
-        mFragmentQuestionContent = new QuestionContentFragment();
-        mFragmentQuestionAnswers = AnswersFragmentFactory.getInstance().getFragment();
+        Fragment fragmentQuestionContent = new QuestionContentFragment();
+        Fragment fragmentQuestionAnswers = AnswersFragmentFactory.getInstance().getFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_question_content, mFragmentQuestionContent)
-                .replace(R.id.frame_question_answers, mFragmentQuestionAnswers)
+                .replace(R.id.frame_question_content, fragmentQuestionContent)
+                .replace(R.id.frame_question_answers, fragmentQuestionAnswers)
                 .commit();
     }
 
@@ -107,11 +172,33 @@ public class QuestionActivity extends AppCompatActivity implements onAnsweredQue
         replaceFragments();
     }
 
+    private void resetCounter() {
+        mCountDownThread.interrupt();
+        mTimeProgress = 0;
+        mRingProgressBar.setProgress(mTimeProgress);
+    }
+
     private void setNextQuestion() {
         mModel.getCurrentQuestionManager().setNextQuestion();
     }
 
     private void displayResults() {
         startActivity(ResultsActivity.newIntent(this, mCorrectAnswers, mQuestionsCounter));
+    }
+
+    private void onTimeOut() {
+        //todo add something better here
+        try {
+            ((onTimeOutListener) fetchFragmentAnswers()).onTimeOut();
+        } catch (Exception e) {
+            Log.d(getClass().toString(), e.toString());
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent startingActivityIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
+        startActivity(startingActivityIntent);
+        finish();
     }
 }
