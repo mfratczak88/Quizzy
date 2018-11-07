@@ -33,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         sRequestQueue = Volley.newRequestQueue(this);
         mGridLayout = findViewById(R.id.gridLayoutID);
-        DrawerLayout drawerLayout = findViewById(R.id.drawer);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this);
         setEventHandlersForGrid();
         fetchModel();
 
