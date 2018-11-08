@@ -13,6 +13,7 @@
     <string name="main_pick_a_category">Pick a category</string>
     <string name="a_answer">A</string>
     <string name="b_answer">B</string>
+    <string name="c_answer">C</string>
     <string name="d_answer">D</string>
     <string name="true_answer">True</string>
     <string name="false_answer">False</string>

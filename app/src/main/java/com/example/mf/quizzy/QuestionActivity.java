@@ -27,7 +27,7 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
     private Handler mCountDownHandler;
     private int mTimeProgress = 0;
     private RingProgressBar mRingProgressBar;
-    private Thread mCountDownThread;
+    private static Thread mCountDownThread;
 
     public QuestionActivity() {
         mModel = ModelFactory.getFactory().getModel();
@@ -94,17 +94,18 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
     }
 
     private void createCountDownHandler() {
-        mCountDownHandler = new Handler() {
+        mCountDownHandler = new Handler(new Handler.Callback() {
             @Override
-            public void handleMessage(Message msg) {
+            public boolean handleMessage(Message msg) {
                 if (msg.what == 0) {
                     if (mTimeProgress < 100) {
                         mTimeProgress++;
                         mRingProgressBar.setProgress(mTimeProgress);
                     }
                 }
+                return true;
             }
-        };
+        });
     }
 
     private void initializeProgressBar() {
