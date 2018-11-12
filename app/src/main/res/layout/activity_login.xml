@@ -17,7 +17,7 @@
         android:paddingRight="20dp" >
 
         <EditText
-            android:id="@+id/email"
+            android:id="@+id/login_email"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -30,7 +30,7 @@
             android:textColorHint="@color/input_login_hint" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/login_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"

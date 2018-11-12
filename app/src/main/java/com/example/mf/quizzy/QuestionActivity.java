@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import io.netopen.hotbitmapgg.library.view.RingProgressBar;
 
-public class QuestionActivity extends AppCompatActivity implements onAnswerShownListener {
+public class QuestionActivity extends AppCompatActivity implements AnswerShownListener {
     private HashMap<Integer, String> mAnswerHistory = new HashMap<>();
     private int mCorrectAnswers;
     private int mQuestionsCounter;
@@ -189,7 +189,7 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
     private void onTimeOut() {
         //todo add something better here
         try {
-            ((onTimeOutListener) fetchFragmentAnswers()).onTimeOut();
+            ((TimeOutListener) fetchFragmentAnswers()).onTimeOut();
         } catch (Exception e) {
             Log.d(getClass().toString(), e.toString());
         }

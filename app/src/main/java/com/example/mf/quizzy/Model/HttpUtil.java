@@ -29,8 +29,8 @@ public class HttpUtil {
         client.get(url, params, responseHandler);
     }
 
-    public static void getRequest(String url, final ResponseListener listener) {
-        JsonObjectRequest getRequest = new JsonObjectRequest(Request.Method.GET, url, null,
+    public static void httpGetRequest(String url, final ResponseListener listener) {
+        JsonObjectRequest getRequestObject = new JsonObjectRequest(Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -45,7 +45,7 @@ public class HttpUtil {
                         listener.onError(error.getMessage());
                     }
                 });
-        sRequestQueue.add(getRequest);
+        sRequestQueue.add(getRequestObject);
     }
 
 }

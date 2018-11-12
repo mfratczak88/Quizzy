@@ -35,4 +35,6 @@
     <string name="settings">Settings</string>
     <string name="fake_name">Jane Doe</string>
     <string name="fake_email">janedoe28@gmail.com</string>
+    <string name="technical_issues_toast_text">Sorry but we\'re experiencing technical issues with connection, please try again later</string>
+    <string name="fill_in_manadatory_fields_toast">Please fill in mandatory fields</string>
 </resources>
