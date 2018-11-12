@@ -90,7 +90,6 @@ public class MainActivity extends AppCompatActivity {
                 couldNotLoadDataToast();
             }
         }
-
     }
 
     private void setEventHandlersForGrid() {
