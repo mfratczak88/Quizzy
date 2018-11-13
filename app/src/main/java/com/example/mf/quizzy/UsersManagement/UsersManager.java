@@ -1,11 +1,16 @@
 package com.example.mf.quizzy.UsersManagement;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.example.mf.quizzy.Listeners.AuthenticationListener;
 import com.example.mf.quizzy.RoomPersistence.User;
 import com.example.mf.quizzy.RoomPersistence.UserRepository;
 import com.example.mf.quizzy.Sessions.SessionManager;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 public class UsersManager implements AuthenticationListener {
     private AuthenticationListener mAuthenticationListener;
@@ -46,6 +51,9 @@ public class UsersManager implements AuthenticationListener {
     private void loadFromLocalDb(String email, String password) {
         try {
             User user = mUserRepository.getUserByEmail(email).getValue();
+            if (user == null)
+                return;
+
             if (isPasswordGivenAMatch(password, user.getPassword())) {
                 mCurrentUser = user;
             }
@@ -63,19 +71,60 @@ public class UsersManager implements AuthenticationListener {
         this.mAuthenticationListener = listener;
     }
 
-    private User mapServerResponseToUserObject(String response) {
-        return null; // for now
+    private User mapServerResponseToUserObject(Map<String, String> response) {
+        // todo: potential performance issues here, to be checked !
+
+        User user = new User();
+        Field[] userFields = user.getClass().getDeclaredFields();
+        Method[] userMethods = user.getClass().getDeclaredMethods();
+
+        for (Field userField : userFields) {
+            String fieldName = userField.getName();
+            String responseValue = response.get(fieldName);
+
+            if (responseValue != null) {
+                try {
+                    for (Method userMethod : userMethods) {
+
+                        String userMethodName = userMethod.getName();
+                        String probableSetterMethod = "set" + fieldName;
+
+                        if (userMethodName.equalsIgnoreCase(probableSetterMethod)) {
+                            userMethod.invoke(user, responseValue);
+                        }
+                    }
+                } catch (Exception e) {
+
+                }
+            }
+
+        }
+        return user;
     }
 
     @Override
-    public void onSuccess(String response) {
+    public void onSuccess(Map<String, String> response) {
         mCurrentUser = mapServerResponseToUserObject(response);
-        mSessionManager.createLoginSession(mCurrentUser.getName(), mCurrentUser.getEmail());
+        if(mCurrentUser != null) {
+            mSessionManager.createLoginSession(mCurrentUser.getName(), mCurrentUser.getEmail());
+            addUserToDb(mCurrentUser);
+        }
         mAuthenticationListener.onSuccess(response);
     }
 
     @Override
     public void onError(String response) {
         mAuthenticationListener.onError(response);
+    }
+
+    private void addUserToDb(final User user){
+        Activity activity = (Activity) mAuthenticationListener;
+        final UserRepository userRepository = new UserRepository(activity.getApplicationContext());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                userRepository.insertUser(user);
+            }
+        }).start();
     }
 }

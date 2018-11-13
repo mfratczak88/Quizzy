@@ -15,17 +15,19 @@ public class AppController extends Application {
     public void onCreate() {
         super.onCreate();
         sInstance = this;
-        sRequestQueue = Volley.newRequestQueue(this);
+        sRequestQueue = Volley.newRequestQueue(getApplicationContext());
     }
 
     public void addToRequestQueue(Request request){
-        assert sRequestQueue != null;
+        if(sRequestQueue == null){
+          sRequestQueue = Volley.newRequestQueue(getApplicationContext());
+        }
         sRequestQueue.add(request);
     }
 
 
     // no real way to make it a singleton here...
-    public static AppController getInstance() {
+    public static synchronized AppController getInstance() {
         if (sInstance == null) {
             sInstance = new AppController();
         }

@@ -13,6 +13,8 @@ import com.example.mf.quizzy.Listeners.AuthenticationListener;
 import com.example.mf.quizzy.Sessions.SessionManager;
 import com.example.mf.quizzy.UsersManagement.UsersManager;
 
+import java.util.Map;
+
 public class LoginActivity extends AppCompatActivity implements AuthenticationListener {
     private Button mLoginButton, mGoToRegisterButton;
     private TextView mEmailText, mPasswordText;
@@ -23,7 +25,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mSessionManager = new SessionManager(getApplicationContext());
-        // check if user is already logged in
+        mSessionManager.logOutUser();
         if (isUserLogged()) {
             goToMainActivity();
             return;
@@ -35,6 +37,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
             public void onClick(View v) {
                 if (!isInputFilledIn()) {
                     fillInInputToast();
+                    return;
                 }
 
                 // todo: dagger here would help obviously...
@@ -59,7 +62,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     private boolean isInputFilledIn() {
-        return mEmailText.getText().toString().isEmpty() || mPasswordText.getText().toString().isEmpty();
+        return  !(mEmailText.getText().toString().isEmpty() || mPasswordText.getText().toString().isEmpty());
     }
 
     private void fillInInputToast() {
@@ -82,7 +85,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     @Override
-    public void onSuccess(String response) {
+    public void onSuccess(Map<String, String> response) {
 
     }
 

@@ -12,6 +12,8 @@ import android.widget.Toast;
 import com.example.mf.quizzy.Listeners.AuthenticationListener;
 import com.example.mf.quizzy.UsersManagement.UsersManager;
 
+import java.util.Map;
+
 public class RegisterActivity extends AppCompatActivity implements AuthenticationListener{
     Button mRegisterButton;
     TextView mNameText, mEmailText, mPasswordText;
@@ -49,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
     }
 
     @Override
-    public void onSuccess(String response) {
+    public void onSuccess(Map<String, String> response) {
 
     }
 

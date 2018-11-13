@@ -19,11 +19,11 @@ public class User implements Serializable {
     private String password;
 
     @ColumnInfo(name = "created_at")
-    @TypeConverters({Timestamp.class})
+    @TypeConverters({Converter.class})
     private Date createdAt;
 
     @ColumnInfo(name = "modified_at")
-    @TypeConverters({Timestamp.class})
+    @TypeConverters({Converter.class})
     private Date modifiedAt;
 
 
