@@ -1,6 +1,6 @@
 package com.example.mf.quizzy.UsersManagement;
 
-public class UserRegisterer {
+class UserRegisterer {
     String name;
     String email;
     String password;

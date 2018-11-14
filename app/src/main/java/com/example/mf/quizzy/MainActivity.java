@@ -26,7 +26,6 @@ import com.example.mf.quizzy.Model.Model;
 public class MainActivity extends AppCompatActivity {
     private GridLayout mGridLayout;
     private Model mModel;
-    public static RequestQueue sRequestQueue;
     private DrawerLayout mDrawerLayout;
 
     @Override
@@ -34,12 +33,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        sRequestQueue = Volley.newRequestQueue(this);
         mGridLayout = findViewById(R.id.gridLayoutID);
 
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
+
         mDrawerLayout = findViewById(R.id.drawer);
 
         NavigationView navigationView = findViewById(R.id.nav_view);

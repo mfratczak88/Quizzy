@@ -15,14 +15,20 @@ public interface DaoAccess {
     @Insert
     Long insertUser(User user);
 
-    @Query("SELECT * FROM User")
-    LiveData<List<User>> getAllUsers();
+    @Query("SELECT * FROM user")
+    List<User> getAllUsers();
 
-    @Query("SELECT * FROM User WHERE email =:email")
-    LiveData<User> getUserByEmail(String email);
+    @Query("SELECT * FROM user WHERE email =:email")
+    User getUserByEmail(String email);
 
-    @Query("SELECT * FROM User WHERE email =:name")
-    LiveData<User> getUserByName(String name);
+    @Query("SELECT * FROM user WHERE email =:name")
+    User getUserByName(String name);
+
+    @Query("SELECT * FROM user where id =:id")
+    User getUserById(int id);
+
+    @Query("SELECT COUNT(*) from user")
+    int countUsers();
 
     @Update
     void updateUser(User user);

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mf.quizzy.MainActivity;
+import com.example.mf.quizzy.MainController.AppController;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -19,8 +20,7 @@ public class HttpUtil {
         void onError(String cause);
     }
 
-    // @TODO: decouple it !!!
-    private static RequestQueue sRequestQueue = MainActivity.sRequestQueue;
+    private static RequestQueue sRequestQueue = AppController.getInstance().getRequestQueue();
 
 
     private static AsyncHttpClient client = new AsyncHttpClient();

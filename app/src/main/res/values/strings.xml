@@ -38,4 +38,5 @@
     <string name="fake_email">janedoe28@gmail.com</string>
     <string name="technical_issues_toast_text">Sorry but we\'re experiencing technical issues with connection, please try again later</string>
     <string name="fill_in_manadatory_fields_toast">Please fill in mandatory fields</string>
+    <string name="no_user_found_at_login">No user found for the given credentials, please register first</string>
 </resources>

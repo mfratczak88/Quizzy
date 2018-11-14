@@ -25,6 +25,9 @@ public class AppController extends Application {
         sRequestQueue.add(request);
     }
 
+    public RequestQueue getRequestQueue() {
+        return sRequestQueue;
+    }
 
     // no real way to make it a singleton here...
     public static synchronized AppController getInstance() {

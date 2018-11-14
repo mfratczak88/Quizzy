@@ -9,13 +9,19 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
-@Entity
+@Entity(tableName = "user")
 public class User implements Serializable {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     private int id;
+
+    @ColumnInfo(name = "name")
     private String name;
+
+    @ColumnInfo(name = "email")
     private String email;
+
+    @ColumnInfo(name = "password")
     private String password;
 
     @ColumnInfo(name = "created_at")

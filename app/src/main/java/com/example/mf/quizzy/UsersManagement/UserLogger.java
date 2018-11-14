@@ -34,6 +34,14 @@ class UserLogger {
         this.mAuthenticationListener = listener;
     }
 
+    public String getEmail(){
+        return mEmail;
+    }
+
+    public String getPassword(){
+        return mPassword;
+    }
+
     protected void login() {
         StringRequest stringRequest = getLoginStringRequest(getLoginRequestBody());
         assert stringRequest != null;

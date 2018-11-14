@@ -25,10 +25,9 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         mSessionManager = new SessionManager(getApplicationContext());
-        mSessionManager.logOutUser();
         if (isUserLogged()) {
             goToMainActivity();
-            return;
+            finish();
         }
         // if not set login page
         mLoginButton = findViewById(R.id.id_login_button);
@@ -86,15 +85,19 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
 
     @Override
     public void onSuccess(Map<String, String> response) {
-
+        goToMainActivity();
     }
 
     @Override
     public void onError(String response) {
-
+        displayInvalidCredentialsToast();
     }
 
     private void displayTechnicalIssuesToast() {
         Toast.makeText(this, R.string.technical_issues_toast_text, Toast.LENGTH_LONG).show();
+    }
+
+    private void displayInvalidCredentialsToast(){
+        Toast.makeText(this, R.string.no_user_found_at_login, Toast.LENGTH_SHORT);
     }
 }
