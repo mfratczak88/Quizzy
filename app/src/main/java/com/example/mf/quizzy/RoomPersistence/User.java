@@ -2,6 +2,7 @@ package com.example.mf.quizzy.RoomPersistence;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.arch.persistence.room.TypeConverters;
 
@@ -36,6 +37,7 @@ public class User implements Serializable {
     public User() {
     }
 
+    @Ignore
     public User(int id, String name, String email, String password, Date createdAt, Date modifiedAt) {
         this.id = id;
         this.name = name;

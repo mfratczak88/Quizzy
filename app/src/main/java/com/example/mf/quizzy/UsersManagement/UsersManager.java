@@ -3,6 +3,7 @@ package com.example.mf.quizzy.UsersManagement;
 import android.app.Activity;
 import android.arch.lifecycle.LiveData;
 import android.content.Context;
+import android.util.Log;
 
 import com.example.mf.quizzy.Listeners.AuthenticationListener;
 import com.example.mf.quizzy.RoomPersistence.User;
@@ -44,12 +45,56 @@ public class UsersManager implements AuthenticationListener {
             mAuthenticationListener.onSuccess(null);
             return;
         }
+        mUserLogger = new UserLogger(getNewUserObjectForLogin(email, password), new UserLogger.LoginListener() {
+            @Override
+            public void onSuccess(Map<String, String> response) {
+                mCurrentUser = mapServerResponseToUserObject(response);
+                if (mCurrentUser != null) {
+                    mSessionManager.createLoginSession(mCurrentUser.getName(), mCurrentUser.getEmail());
+                    addUserToDb(mCurrentUser);
+                }
+                mAuthenticationListener.onSuccess(response);
+            }
 
-        mUserLogger = new UserLogger(email, password, this);
+            @Override
+            public void onError(String reason) {
+                mAuthenticationListener.onError(reason);
+            }
+        });
         mUserLogger.login();
     }
 
     public void registerUser(String name, String email, String password) {
+        mUserRegisterer = new UserRegisterer(getNewUserObjectForRegistration(name, email, password), new UserRegisterer.RegistrationListener() {
+            @Override
+            public void onSuccess(Map<String, String> response) {
+                mCurrentUser = mUserRegisterer.getUser();
+                addUserToDb(mCurrentUser);
+                mAuthenticationListener.onSuccess(response);
+            }
+
+            @Override
+            public void onError(String error) {
+                mAuthenticationListener.onError(error);
+            }
+        });
+        mUserRegisterer.register();
+    }
+
+    private User getNewUserObjectForRegistration(String name, String email, String password) {
+        User user = new User();
+        user.setName(name);
+        user.setPassword(password);
+        user.setEmail(email);
+        return user;
+    }
+
+
+    private User getNewUserObjectForLogin(String email, String password) {
+        User user = new User();
+        user.setEmail(email);
+        user.setPassword(password);
+        return user;
     }
 
     private void loadFromLocalDb(String email, String password) {
@@ -72,20 +117,13 @@ public class UsersManager implements AuthenticationListener {
     }
 
     private User mapServerResponseToUserObject(Map<String, String> response) {
-        ResponseToUserMapper mapper = new ResponseToUserMapper(new User(), response);
-        User user = mapper.mapResponseToUser();
-        user.setPassword(mUserLogger.getPassword());
-        return user;
+        ResponseToUserMapper mapper = new ResponseToUserMapper(mUserLogger.getUser(), response);
+        return mapper.mapResponseToUser();
     }
 
     @Override
     public void onSuccess(Map<String, String> response) {
-        mCurrentUser = mapServerResponseToUserObject(response);
-        if (mCurrentUser != null) {
-            mSessionManager.createLoginSession(mCurrentUser.getName(), mCurrentUser.getEmail());
-            addUserToDb(mCurrentUser);
-        }
-        mAuthenticationListener.onSuccess(response);
+
     }
 
     @Override
@@ -150,7 +188,7 @@ public class UsersManager implements AuthenticationListener {
                         userMethod.invoke(mUser, responseValue);
                     }
                 } catch (Exception e) {
-
+                    Log.d(getClass().toString(), "Setting field " + fieldName + " failed");
                 }
             }
         }

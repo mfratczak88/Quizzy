@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mf.quizzy.Listeners.AuthenticationListener;
+import com.example.mf.quizzy.MainController.AppController;
 import com.example.mf.quizzy.Sessions.SessionManager;
 import com.example.mf.quizzy.UsersManagement.UsersManager;
 
@@ -24,31 +25,32 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mSessionManager = new SessionManager(getApplicationContext());
+        loadSessionManager();
         if (isUserLogged()) {
             goToMainActivity();
             finish();
+            return;
         }
-        // if not set login page
-        mLoginButton = findViewById(R.id.id_login_button);
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!isInputFilledIn()) {
-                    fillInInputToast();
-                    return;
-                }
+        findTexts();
+        findButtons();
+        setLoginButtonListener();
+        setRegisterButtonListener();
+    }
 
-                // todo: dagger here would help obviously...
-                UsersManager usersManager = UsersManager.getInstance(LoginActivity.this);
-                try {
-                    usersManager.loginUser(mEmailText.getText().toString(), mPasswordText.getText().toString());
-                } catch (Exception e) {
-                    displayTechnicalIssuesToast();
-                }
-            }
-        });
+    private void loadSessionManager(){
+        mSessionManager = new SessionManager(this);
+    }
+
+    private void findTexts(){
+        mEmailText = findViewById(R.id.login_email);
+        mPasswordText = findViewById(R.id.login_password);
+    }
+    private void findButtons(){
+        mLoginButton = findViewById(R.id.id_login_button);
         mGoToRegisterButton = findViewById(R.id.id_back_register_button);
+    }
+
+    private void setRegisterButtonListener(){
         mGoToRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -56,8 +58,30 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
             }
         });
 
-        mEmailText = findViewById(R.id.login_email);
-        mPasswordText = findViewById(R.id.login_password);
+
+    }
+
+    private void setLoginButtonListener(){
+        mLoginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!isInputFilledIn()) {
+                    fillInInputToast();
+                    return;
+                }
+                loginUser();
+            }
+        });
+    }
+
+    private void loginUser(){
+        // todo: dagger here would help obviously...
+        UsersManager usersManager = UsersManager.getInstance(LoginActivity.this);
+        try {
+            usersManager.loginUser(mEmailText.getText().toString(), mPasswordText.getText().toString());
+        } catch (Exception e) {
+            displayTechnicalIssuesToast();
+        }
     }
 
     private boolean isInputFilledIn() {
@@ -73,8 +97,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     private void goToMainActivity() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
+        startActivity(AppController.getInstance().getMainIntent(this));
         finish();
     }
 
@@ -98,6 +121,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     private void displayInvalidCredentialsToast(){
-        Toast.makeText(this, R.string.no_user_found_at_login, Toast.LENGTH_SHORT);
+        Toast.makeText(this, R.string.no_user_found_at_login, Toast.LENGTH_SHORT).show();
     }
 }

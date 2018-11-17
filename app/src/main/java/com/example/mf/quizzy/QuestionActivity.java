@@ -195,11 +195,4 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
             Log.d(getClass().toString(), e.toString());
         }
     }
-
-    @Override
-    public void onBackPressed() {
-        Intent startingActivityIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-        startActivity(startingActivityIntent);
-        finish();
-    }
 }

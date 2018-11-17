@@ -5,9 +5,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.CardView;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridLayout;
@@ -15,45 +17,79 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
 import com.example.mf.quizzy.Listeners.DataLoadingListener;
+import com.example.mf.quizzy.MainController.AppController;
 import com.example.mf.quizzy.Model.ModelFactory;
 import com.example.mf.quizzy.Model.Model;
+import com.example.mf.quizzy.Sessions.SessionManager;
 
 
 public class MainActivity extends AppCompatActivity {
     private GridLayout mGridLayout;
     private Model mModel;
     private DrawerLayout mDrawerLayout;
+    private SessionManager mSessionManager;
+    private NavigationView mNavigationView;
 
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mGridLayout = findViewById(R.id.gridLayoutID);
+        setGridLayout();
+        setActionBar();
+        setSessionManager();
+        setNavigationDrawer();
+        setModel();
+    }
 
+    private void setNavigationDrawer(){
+        mDrawerLayout = findViewById(R.id.drawer);
+        setNavigationDrawerOnClickHandlers();
+    }
+
+
+    private void setNavigationDrawerOnClickHandlers(){
+         mNavigationView = findViewById(R.id.nav_view);
+         setOnLogOutItemClickedHandler();
+
+
+    }
+    private void setActionBar(){
         ActionBar actionbar = getSupportActionBar();
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.ic_menu);
 
-        mDrawerLayout = findViewById(R.id.drawer);
+    }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+    private void setOnLogOutItemClickedHandler(){
+        final MenuItem logOut  = mNavigationView.getMenu().findItem(R.id.log_out);
+        logOut.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
             @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                menuItem.setChecked(true);
-                mDrawerLayout.closeDrawers();
-                return true;
+            public boolean onMenuItemClick(MenuItem item) {
+               mDrawerLayout.closeDrawers();
+               logOut();
+               return true;
             }
         });
-        setEventHandlersForGrid();
-        fetchModel();
-
     }
+
+    private void logOut(){
+        mSessionManager.logOutUser();
+        startActivity(AppController.getInstance().getLoginIntent(this));
+        finish();
+    }
+
+    private void setSessionManager(){
+        mSessionManager = new SessionManager(this);
+    }
+
+    private void setGridLayout(){
+        mGridLayout = findViewById(R.id.gridLayoutID);
+        setEventHandlersForGrid();
+    }
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -65,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void fetchModel() {
+    private void setModel() {
         if (mModel == null)
             mModel = ModelFactory.getFactory().getModel();
     }

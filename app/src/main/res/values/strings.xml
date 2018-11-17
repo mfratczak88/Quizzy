@@ -37,6 +37,12 @@
     <string name="fake_name">Jane Doe</string>
     <string name="fake_email">janedoe28@gmail.com</string>
     <string name="technical_issues_toast_text">Sorry but we\'re experiencing technical issues with connection, please try again later</string>
-    <string name="fill_in_manadatory_fields_toast">Please fill in mandatory fields</string>
+    <string name="fill_in_mandatory_fields_toast">Please fill in mandatory fields</string>
     <string name="no_user_found_at_login">No user found for the given credentials, please register first</string>
+    <string name="invalid_email">Invalid email given, please try again</string>
+    <string name="invalid_password">Invalid password given</string>
+    <string name="empty_input">Empty input. Please type in the required data</string>
+    <string name="log_out">Log out</string>
+    <string name="successful_registration">Registration successful, you can now log in</string>
+    <string name="ok">Ok</string>
 </resources>
