@@ -1,6 +1,6 @@
 package com.example.mf.quizzy.Model;
 
-public class AnswerMultiple implements Answer {
+class AnswerMultiple implements Answer {
     boolean mCorrect;
     String mText;
 

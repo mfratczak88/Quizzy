@@ -5,7 +5,7 @@ package com.example.mf.quizzy.Model;
 // are in strings.xml file
 
 import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Listeners.onDataLoadingListener;
+import com.example.mf.quizzy.Listeners.DataLoadingListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ public class QuestionBank implements Model {
     private static Model sInstance;
     private Map<String, String> mCategories;
     private QuestionManagerImplementation mQuestionManager;
-    private onDataLoadingListener mListener;
+    private DataLoadingListener mListener;
     private List<QuestionManagerImplementation> mManagers = new ArrayList<>();
 
     public static Model getInstance() {
@@ -36,7 +36,7 @@ public class QuestionBank implements Model {
     }
 
     @Override
-    public void loadData(String categoryName, onDataLoadingListener listener) throws QuestionManagerDataLoadException {
+    public void loadData(String categoryName, DataLoadingListener listener) throws QuestionManagerDataLoadException {
         addListener(listener);
         if (hasThisManager(categoryName)) {
             setRequiredQuestionManager(categoryName);
@@ -78,14 +78,14 @@ public class QuestionBank implements Model {
         return false;
     }
 
-    private void addListener(onDataLoadingListener listener) {
+    private void addListener(DataLoadingListener listener) {
         mListener = listener;
     }
 
     private void loadNewQuestionManager(String categoryName) throws QuestionManagerDataLoadException {
         try {
             String categoryNumber = mCategories.get(categoryName);
-            mQuestionManager = new QuestionManagerImplementation(categoryNumber, categoryName, new onDataLoadingListener() {
+            mQuestionManager = new QuestionManagerImplementation(categoryNumber, categoryName, new DataLoadingListener() {
                 @Override
                 public void onDataLoaded() {
                     mListener.onDataLoaded();

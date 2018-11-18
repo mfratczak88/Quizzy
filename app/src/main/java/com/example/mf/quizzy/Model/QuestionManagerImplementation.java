@@ -12,8 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.example.mf.quizzy.Listeners.onDataLoadingListener;
+import com.example.mf.quizzy.Listeners.DataLoadingListener;
 import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.Util.HttpUtil;
 
 public class QuestionManagerImplementation implements QuestionManager {
 
@@ -22,13 +23,13 @@ public class QuestionManagerImplementation implements QuestionManager {
     private String mURL;
     private List<Question> mQuestions = new ArrayList<>();
     private List<Question> mOneSessionQuestions = new ArrayList<>();
-    private List<onDataLoadingListener> mListeners = new ArrayList<>();
+    private List<DataLoadingListener> mListeners = new ArrayList<>();
     private Helper mHelper = new Helper();
     private String mCategoryName;
     private Question mCurrentQuestion;
     private Iterator mIterator = new Iterator();
 
-    protected QuestionManagerImplementation(String categoryNumber, String categoryName, onDataLoadingListener listener) {
+    protected QuestionManagerImplementation(String categoryNumber, String categoryName, DataLoadingListener listener) {
         mCategoryName = categoryName;
         mURL = BASE_URL + categoryNumber;
         mListeners.add(listener);
@@ -86,7 +87,7 @@ public class QuestionManagerImplementation implements QuestionManager {
     //  next time loadData will be called those five will be poped from current quiz array
     //  and new ones will be loaded
     private void loadData() {
-        HttpUtil.getRequest(mURL, new HttpUtil.ResponseListener() {
+        HttpUtil.httpGetRequest(mURL, new HttpUtil.ResponseListener() {
             @Override
             public void onResponse(JSONObject response) {
                 prepareQuestions(response);
@@ -164,13 +165,13 @@ public class QuestionManagerImplementation implements QuestionManager {
     }
 
     private void notifyOnFailure() {
-        for (onDataLoadingListener listener : mListeners) {
+        for (DataLoadingListener listener : mListeners) {
             listener.onDataLoaded();
         }
     }
 
     private void notifyOnSuccess() {
-        for (onDataLoadingListener listener : mListeners) {
+        for (DataLoadingListener listener : mListeners) {
             listener.onDataLoaded();
         }
     }

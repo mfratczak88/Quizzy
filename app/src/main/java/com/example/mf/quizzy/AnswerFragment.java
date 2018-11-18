@@ -2,8 +2,8 @@ package com.example.mf.quizzy;
 
 import android.content.Context;
 
-import com.example.mf.quizzy.Listeners.onAnswerShownListener;
-import com.example.mf.quizzy.Listeners.onTimeOutListener;
+import com.example.mf.quizzy.Listeners.AnswerShownListener;
+import com.example.mf.quizzy.Listeners.TimeOutListener;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,10 +29,10 @@ import java.util.Map;
 
 import static java.lang.Thread.sleep;
 
-public abstract class AnswerFragment extends Fragment implements onTimeOutListener {
+public abstract class AnswerFragment extends Fragment implements TimeOutListener {
     private final static int SLEEP_TIME = 3000;
     protected List<Button> mButtons = new ArrayList<>();
-    private onAnswerShownListener mOnAnswerShownListener;
+    private AnswerShownListener mAnswerShownListener;
     private Util mUtil = new AnswerFragment.Util();
     private Model mModel = ModelFactory.getFactory().getModel();
     private Button mCorrectAnswerButton;
@@ -50,14 +50,14 @@ public abstract class AnswerFragment extends Fragment implements onTimeOutListen
     public void onAttach(Context context) {
         super.onAttach(context);
         try {
-            setOnAnswerShownListener((onAnswerShownListener) context);
+            setAnswerShownListener((AnswerShownListener) context);
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement onAnswerShownListener");
+            throw new ClassCastException(context.toString() + "must implement AnswerShownListener");
         }
     }
 
-    public void setOnAnswerShownListener(onAnswerShownListener onAnswerShownListener) {
-        mOnAnswerShownListener = onAnswerShownListener;
+    public void setAnswerShownListener(AnswerShownListener answerShownListener) {
+        mAnswerShownListener = answerShownListener;
     }
 
     @Override
@@ -93,7 +93,7 @@ public abstract class AnswerFragment extends Fragment implements onTimeOutListen
 
     protected void checkAnswerAndNotifyListener(int buttonNumber) {
         //@todo: create new class here obviously
-        mOnAnswerShownListener.stopClock();
+        mAnswerShownListener.stopClock();
         Button chosenAnswerButton = mButtons.get(buttonNumber);
 
         boolean answerWasCorrect = chosenAnswerButton.getText().equals(mCorrectAnswerButton.getText());
@@ -118,12 +118,12 @@ public abstract class AnswerFragment extends Fragment implements onTimeOutListen
 
     private Command createOnAnswerGivenCallBackCommand(String chosenAnswerButton, boolean wasItCorrect) {
         Object[] args = {chosenAnswerButton, wasItCorrect};
-        Method[] methods = mOnAnswerShownListener.getClass().getMethods();
+        Method[] methods = mAnswerShownListener.getClass().getMethods();
         Method methodName;
         for (Method method : methods) {
             if (method.getName().contains("onAnswerGiven")) { //todo : change this hideous hardcode
                 methodName = method;
-                return new ListenerNotifierCommand(mOnAnswerShownListener, methodName, args);
+                return new ListenerNotifierCommand(mAnswerShownListener, methodName, args);
             }
         }
         return null;
@@ -143,12 +143,12 @@ public abstract class AnswerFragment extends Fragment implements onTimeOutListen
     }
 
     private Command createOnAnswerShownCallBackCommand() {
-        Method[] methods = mOnAnswerShownListener.getClass().getMethods();
+        Method[] methods = mAnswerShownListener.getClass().getMethods();
         Method methodName;
         for (Method method : methods) {
             if (method.getName().contains("onAnswerShown")) { //todo : change this hideous hardcode
                 methodName = method;
-                return new ListenerNotifierCommand(mOnAnswerShownListener, methodName, null);
+                return new ListenerNotifierCommand(mAnswerShownListener, methodName, null);
             }
         }
         return null;
@@ -218,11 +218,11 @@ public abstract class AnswerFragment extends Fragment implements onTimeOutListen
     }
 
     private class ListenerNotifierCommand implements Command {
-        private onAnswerShownListener mReceiver;
+        private AnswerShownListener mReceiver;
         private Method mMethod;
         private Object mArgs[];
 
-        private ListenerNotifierCommand(onAnswerShownListener receiver, Method method, Object[] args) {
+        private ListenerNotifierCommand(AnswerShownListener receiver, Method method, Object[] args) {
             this.mReceiver = receiver;
             mMethod = method;
             this.mArgs = args;

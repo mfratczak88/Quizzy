@@ -19,7 +19,7 @@ import java.util.HashMap;
 
 import io.netopen.hotbitmapgg.library.view.RingProgressBar;
 
-public class QuestionActivity extends AppCompatActivity implements onAnswerShownListener {
+public class QuestionActivity extends AppCompatActivity implements AnswerShownListener {
     private HashMap<Integer, String> mAnswerHistory = new HashMap<>();
     private int mCorrectAnswers;
     private int mQuestionsCounter;
@@ -27,7 +27,7 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
     private Handler mCountDownHandler;
     private int mTimeProgress = 0;
     private RingProgressBar mRingProgressBar;
-    private Thread mCountDownThread;
+    private static Thread mCountDownThread;
 
     public QuestionActivity() {
         mModel = ModelFactory.getFactory().getModel();
@@ -94,17 +94,18 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
     }
 
     private void createCountDownHandler() {
-        mCountDownHandler = new Handler() {
+        mCountDownHandler = new Handler(new Handler.Callback() {
             @Override
-            public void handleMessage(Message msg) {
+            public boolean handleMessage(Message msg) {
                 if (msg.what == 0) {
                     if (mTimeProgress < 100) {
                         mTimeProgress++;
                         mRingProgressBar.setProgress(mTimeProgress);
                     }
                 }
+                return true;
             }
-        };
+        });
     }
 
     private void initializeProgressBar() {
@@ -189,16 +190,9 @@ public class QuestionActivity extends AppCompatActivity implements onAnswerShown
     private void onTimeOut() {
         //todo add something better here
         try {
-            ((onTimeOutListener) fetchFragmentAnswers()).onTimeOut();
+            ((TimeOutListener) fetchFragmentAnswers()).onTimeOut();
         } catch (Exception e) {
             Log.d(getClass().toString(), e.toString());
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        Intent startingActivityIntent = getBaseContext().getPackageManager().getLaunchIntentForPackage(getBaseContext().getPackageName());
-        startActivity(startingActivityIntent);
-        finish();
     }
 }

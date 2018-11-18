@@ -1,6 +1,6 @@
 package com.example.mf.quizzy.Listeners;
 
-public interface onTimeOutListener {
+public interface TimeOutListener {
 
     void onTimeOut();
 }

@@ -13,7 +13,8 @@
         android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name=".MainController.AppController">
         <activity android:name=".LoginActivity"
             android:theme="@style/AppTheme">
             <intent-filter>

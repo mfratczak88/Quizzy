@@ -7,6 +7,12 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:actionBarStyle">@style/MyActionBarStyle</item>
     </style>
-
+    <style name="MyActionBarStyle" parent="Base.Theme.AppCompat.Light">
+        <item name="android:textColor">#ffffff</item>
+    </style>
+    <style name="Dialog">
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>
