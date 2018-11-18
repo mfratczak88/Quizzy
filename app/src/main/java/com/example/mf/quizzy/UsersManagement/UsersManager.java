@@ -21,8 +21,7 @@ public class UsersManager implements AuthenticationListener {
     private User mCurrentUser;
     private SessionManager mSessionManager;
     private static UsersManager sInstance;
-    private UserLogger mUserLogger;
-    private UserRegisterer mUserRegisterer;
+    private BackendConnector mBackendConnector;
 
     public static UsersManager getInstance(Context context) {
         if (sInstance == null) {
@@ -42,10 +41,11 @@ public class UsersManager implements AuthenticationListener {
     public void loginUser(String email, String password) throws Exception {
         loadFromLocalDb(email, password);
         if (mCurrentUser != null) {
+            mSessionManager.createLoginSession(mCurrentUser.getName(), mCurrentUser.getEmail());
             mAuthenticationListener.onSuccess(null);
             return;
         }
-        mUserLogger = new UserLogger(getNewUserObjectForLogin(email, password), new UserLogger.LoginListener() {
+        mBackendConnector = BackendConnectorFactory.getLoginConnector(getNewUserObjectForLogin(email, password), new BackendConnector.Listener() {
             @Override
             public void onSuccess(Map<String, String> response) {
                 mCurrentUser = mapServerResponseToUserObject(response);
@@ -61,14 +61,14 @@ public class UsersManager implements AuthenticationListener {
                 mAuthenticationListener.onError(reason);
             }
         });
-        mUserLogger.login();
+        mBackendConnector.connect();
     }
 
     public void registerUser(String name, String email, String password) {
-        mUserRegisterer = new UserRegisterer(getNewUserObjectForRegistration(name, email, password), new UserRegisterer.RegistrationListener() {
+        mBackendConnector = BackendConnectorFactory.getRegistrationConnector(getNewUserObjectForRegistration(name, email, password), new BackendConnector.Listener() {
             @Override
             public void onSuccess(Map<String, String> response) {
-                mCurrentUser = mUserRegisterer.getUser();
+                mCurrentUser = mBackendConnector.getUser();
                 addUserToDb(mCurrentUser);
                 mAuthenticationListener.onSuccess(response);
             }
@@ -78,7 +78,7 @@ public class UsersManager implements AuthenticationListener {
                 mAuthenticationListener.onError(error);
             }
         });
-        mUserRegisterer.register();
+       mBackendConnector.connect();
     }
 
     private User getNewUserObjectForRegistration(String name, String email, String password) {
@@ -117,7 +117,7 @@ public class UsersManager implements AuthenticationListener {
     }
 
     private User mapServerResponseToUserObject(Map<String, String> response) {
-        ResponseToUserMapper mapper = new ResponseToUserMapper(mUserLogger.getUser(), response);
+        ResponseToUserMapper mapper = new ResponseToUserMapper(mBackendConnector.getUser(), response);
         return mapper.mapResponseToUser();
     }
 

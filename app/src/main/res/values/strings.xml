@@ -45,4 +45,8 @@
     <string name="log_out">Log out</string>
     <string name="successful_registration">Registration successful, you can now log in</string>
     <string name="ok">Ok</string>
+    <string name="on_log_out_message">Are you sure you want to log out?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="on_quit_message">Are you sure you want to quit</string>
 </resources>

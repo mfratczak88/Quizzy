@@ -1,14 +1,12 @@
 package com.example.mf.quizzy;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
 import android.support.annotation.Nullable;
-import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Patterns;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -30,13 +28,13 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
-        findButtons();
+        setButtonsAndTexts();
         setListenerForRegisterButton();
         setListenerForBackButton();
 
     }
 
-    private void findButtons() {
+    private void setButtonsAndTexts() {
         mNameText = findViewById(R.id.register_name);
         mEmailText = findViewById(R.id.register_email);
         mPasswordText = findViewById(R.id.register_password);
@@ -54,9 +52,9 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
 
                 } catch (Exception e) {
                     validationToast(e.getMessage());
-
-                } finally {
-                    passwordRulesToast();
+                    if (e.getMessage().equalsIgnoreCase(InputValidator.InputException.INVALID_PASSWORD)) {
+                        passwordRulesToast();
+                    }
                 }
             }
         });
@@ -100,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
     }
 
     private void showSuccessfulRegistrationDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(getApplicationContext())
+        AlertDialog alertDialog = new AlertDialog.Builder(new ContextThemeWrapper(this, R.style.Dialog))
                 .setMessage(R.string.successful_registration)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
@@ -122,7 +120,7 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
             private static final String INVALID_PASSWORD = "Invalid password";
             private static final String INVALID_EMAIL = "Invalid email";
 
-            public InputException(String exceptionText) {
+            private InputException(String exceptionText) {
                 super(exceptionText);
             }
         }
@@ -132,7 +130,7 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
 
         private InputValidator() {
             mValidator = Validator.
-                    builder(7, 25)
+                    getBuilderForPasswordLengthBetween(7, 25)
                     .requireCapitalLetter()
                     .requireNumber()
                     .requireSpecialChar()

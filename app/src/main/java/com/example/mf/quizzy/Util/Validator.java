@@ -7,7 +7,7 @@ import java.util.regex.Pattern;
 public class Validator {
     Pattern mPasswordPattern;
 
-    public static Builder builder(int minLength, int maxLength) {
+    public static Builder getBuilderForPasswordLengthBetween(int minLength, int maxLength) {
         return new Builder(minLength, maxLength);
     }
 

@@ -3,7 +3,6 @@ package com.example.mf.quizzy.UsersManagement;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.mf.quizzy.Config.AppConfig;
-import com.example.mf.quizzy.Listeners.AuthenticationListener;
 import com.example.mf.quizzy.RoomPersistence.User;
 import com.example.mf.quizzy.Util.HttpUtil;
 
@@ -12,26 +11,27 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-class UserLogger {
-    // todo -> extract an abstract class of authenticator with getUser method and abstract createRequestBody
-    interface LoginListener{
-        void onSuccess(Map<String, String> response);
-        void onError(String reason);
-    }
+class UserLogger  implements BackendConnector{
 
     private User mUser;
-    private LoginListener mListener;
+    private Listener mListener;
 
-    protected UserLogger(User user, LoginListener listener) {
+     UserLogger(User user, Listener listener) {
         this.mUser = user;
         this.mListener = listener;
     }
 
-    protected User getUser() {
+    @Override
+    public void connect() {
+        login();
+    }
+
+    @Override
+    public User getUser() {
         return mUser;
     }
 
-    protected void login() {
+    private void login() {
         HttpUtil.httpPostRequest(AppConfig.URL_LOGIN, createRequestBody(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

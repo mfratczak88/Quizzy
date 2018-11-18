@@ -76,11 +76,10 @@ public class HttpUtil {
             }
 
             @Override
-            public byte[] getBody() throws AuthFailureError {
+            public byte[] getBody() {
                 try {
                     return body == null ? null : body.toString().getBytes("utf-8");
                 } catch (UnsupportedEncodingException e) {
-                    // todo: add error handling here
                     return null;
                 }
             }

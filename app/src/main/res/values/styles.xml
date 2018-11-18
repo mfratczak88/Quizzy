@@ -12,4 +12,7 @@
     <style name="MyActionBarStyle" parent="Base.Theme.AppCompat.Light">
         <item name="android:textColor">#ffffff</item>
     </style>
+    <style name="Dialog">
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>
