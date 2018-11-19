@@ -5,16 +5,12 @@ import android.util.Log;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.mf.quizzy.Config.AppConfig;
-import com.example.mf.quizzy.MainActivity;
-import com.example.mf.quizzy.MainController.AppController;
+import com.example.mf.quizzy.App;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.android.volley.*;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
@@ -30,7 +26,7 @@ public class HttpUtil {
         void onError(String cause);
     }
 
-    private static RequestQueue sRequestQueue = AppController.getInstance().getRequestQueue();
+    private static RequestQueue sRequestQueue = App.getInstance().getRequestQueue();
 
 
     private static AsyncHttpClient client = new AsyncHttpClient();

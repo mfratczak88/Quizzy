@@ -1,4 +1,4 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.GamePlay;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,6 +13,7 @@ import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
 import com.example.mf.quizzy.Model.QuestionBank;
 import com.example.mf.quizzy.Model.QuestionManager;
+import com.example.mf.quizzy.R;
 
 public class QuestionContentFragment extends Fragment {
     private Model mModel = ModelFactory.getFactory().getModel();

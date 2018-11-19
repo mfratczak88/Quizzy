@@ -1,10 +1,9 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.GamePlay;
 
 import android.support.v4.app.Fragment;
 
 import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
-import com.example.mf.quizzy.Model.QuestionBank;
 
 public class AnswersFragmentFactory {
     private static final int QUESTION_BOOLEAN = 0;

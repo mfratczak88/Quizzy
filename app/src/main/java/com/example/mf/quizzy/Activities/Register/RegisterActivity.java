@@ -1,4 +1,4 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.Register;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,7 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mf.quizzy.Listeners.AuthenticationListener;
-import com.example.mf.quizzy.MainController.AppController;
+import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.UsersManagement.UsersManager;
 import com.example.mf.quizzy.Util.Validator;
 
@@ -76,7 +77,7 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
     }
 
     private void goToLogin() {
-        startActivity(AppController.getInstance().getLoginIntent(this));
+        startActivity(App.getInstance().getLoginIntent(this));
     }
 
     private void passwordRulesToast() {

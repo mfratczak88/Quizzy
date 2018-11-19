@@ -1,4 +1,4 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.Login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,7 +10,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.mf.quizzy.Listeners.AuthenticationListener;
-import com.example.mf.quizzy.MainController.AppController;
+import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.R;
+import com.example.mf.quizzy.Activities.Register.RegisterActivity;
 import com.example.mf.quizzy.Sessions.SessionManager;
 import com.example.mf.quizzy.UsersManagement.UsersManager;
 
@@ -97,7 +99,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     private void goToMainActivity() {
-        startActivity(AppController.getInstance().getMainIntent(this));
+        startActivity(App.getInstance().getMainIntent(this));
         finish();
     }
 

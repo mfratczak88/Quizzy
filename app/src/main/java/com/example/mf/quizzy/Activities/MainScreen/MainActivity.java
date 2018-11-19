@@ -1,4 +1,4 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.MainScreen;
 
 import android.content.DialogInterface;
 import android.support.design.widget.NavigationView;
@@ -20,9 +20,11 @@ import android.widget.Toast;
 
 import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
 import com.example.mf.quizzy.Listeners.DataLoadingListener;
-import com.example.mf.quizzy.MainController.AppController;
+import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.Model.ModelFactory;
 import com.example.mf.quizzy.Model.Model;
+import com.example.mf.quizzy.Activities.GamePlay.QuestionActivity;
+import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.Sessions.SessionManager;
 
 import java.util.Map;
@@ -78,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void logOut() {
         mSessionManager.logOutUser();
-        startActivity(AppController.getInstance().getLoginIntent(this));
+        startActivity(App.getInstance().getLoginIntent(this));
         finish();
     }
 

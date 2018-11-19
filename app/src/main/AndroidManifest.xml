@@ -14,8 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:name=".MainController.AppController">
-        <activity android:name=".LoginActivity"
+        android:name=".App">
+        <activity android:name=".Activities.Login.LoginActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,10 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".QuestionActivity"/>
-        <activity android:name=".ResultsActivity"/>
-        <activity android:name=".RegisterActivity"/>
+        <activity android:name=".Activities.MainScreen.MainActivity"/>
+        <activity android:name=".Activities.GamePlay.QuestionActivity"/>
+        <activity android:name=".Activities.Results.ResultsActivity"/>
+        <activity android:name=".Activities.Register.RegisterActivity"/>
     </application>
 
 </manifest>

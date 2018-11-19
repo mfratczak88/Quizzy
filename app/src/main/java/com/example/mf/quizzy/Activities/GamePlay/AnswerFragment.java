@@ -1,4 +1,4 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.GamePlay;
 
 import android.content.Context;
 
@@ -18,6 +18,7 @@ import android.widget.Button;
 
 import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
+import com.example.mf.quizzy.R;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;

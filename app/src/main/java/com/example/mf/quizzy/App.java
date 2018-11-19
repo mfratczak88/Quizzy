@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.MainController;
+package com.example.mf.quizzy;
 
 import android.app.Application;
 import android.content.Context;
@@ -7,15 +7,15 @@ import android.content.Intent;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.example.mf.quizzy.LoginActivity;
-import com.example.mf.quizzy.MainActivity;
-import com.example.mf.quizzy.QuestionActivity;
-import com.example.mf.quizzy.RegisterActivity;
-import com.example.mf.quizzy.ResultsActivity;
+import com.example.mf.quizzy.Activities.Login.LoginActivity;
+import com.example.mf.quizzy.Activities.MainScreen.MainActivity;
+import com.example.mf.quizzy.Activities.GamePlay.QuestionActivity;
+import com.example.mf.quizzy.Activities.Register.RegisterActivity;
+import com.example.mf.quizzy.Activities.Results.ResultsActivity;
 
-public class AppController extends Application {
+public class App extends Application {
     private static RequestQueue sRequestQueue;
-    private static AppController sInstance;
+    private static App sInstance;
 
     @Override
     public void onCreate() {
@@ -36,9 +36,9 @@ public class AppController extends Application {
     }
 
     // no real way to make it a singleton here...
-    public static synchronized AppController getInstance() {
+    public static synchronized App getInstance() {
         if (sInstance == null) {
-            sInstance = new AppController();
+            sInstance = new App();
         }
         return sInstance;
     }

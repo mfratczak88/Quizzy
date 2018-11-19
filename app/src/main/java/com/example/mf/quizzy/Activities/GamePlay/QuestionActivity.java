@@ -1,4 +1,4 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.GamePlay;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,9 +11,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
+import com.example.mf.quizzy.Activities.Results.ResultsActivity;
 import com.example.mf.quizzy.Listeners.*;
 import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
+import com.example.mf.quizzy.R;
 
 import java.util.HashMap;
 

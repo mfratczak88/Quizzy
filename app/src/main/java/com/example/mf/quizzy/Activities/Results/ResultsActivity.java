@@ -1,4 +1,4 @@
-package com.example.mf.quizzy;
+package com.example.mf.quizzy.Activities.Results;
 
 import android.content.Context;
 import android.content.Intent;
@@ -10,10 +10,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.mf.quizzy.Activities.MainScreen.MainActivity;
 import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
 import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
-import com.example.mf.quizzy.Model.QuestionBank;
+import com.example.mf.quizzy.Activities.GamePlay.QuestionActivity;
+import com.example.mf.quizzy.R;
 
 public class ResultsActivity extends AppCompatActivity {
     private static final String EXTRA_TOTAL_QUESTIONS = "com.example.mf.quizzy.resultactivity.total_questions";
