@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_editor_absoluteY="25dp"
-    android:background="@drawable/rounded_textview">
+    android:background="@drawable/question_textview">
 
     <TextView
         android:id="@+id/question_text"
@@ -26,6 +26,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/rounded_textview" />
+        tools:background="@drawable/question_textview" />
 
 </android.support.constraint.ConstraintLayout>

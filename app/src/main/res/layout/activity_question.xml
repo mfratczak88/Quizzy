@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
+    android:background="@drawable/gradient_main"
     tools:layout_editor_absoluteY="25dp">
 
 
@@ -15,7 +15,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_textview"
+        android:background="@drawable/question_textview"
         app:layout_constraintBottom_toTopOf="@+id/guideline_top"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -39,10 +39,10 @@
         app:layout_constraintTop_toTopOf="@+id/guideline_top"
         app:max="100"
         app:ringColor="@android:color/darker_gray"
-        app:ringProgressColor="@color/colorPrimary"
+        app:ringProgressColor="@color/primaryColor"
         app:ringWidth="3dp"
         app:style="STROKE"
-        app:textColor="@color/colorPrimary"
+        app:textColor="@color/primaryColor"
         app:textIsShow="false"
         app:textSize="16sp" />
 

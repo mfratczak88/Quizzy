@@ -33,7 +33,7 @@
                 android:layout_marginTop="8dp"
                 android:fontFamily="monospace"
                 android:text="@string/main_pick_a_category"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/primaryTextColor"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -386,5 +386,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header"
-        app:menu="@menu/menu" />
+        app:menu="@menu/menu"
+        android:theme="@style/MyActionBarStyle"/>
 </android.support.v4.widget.DrawerLayout>
