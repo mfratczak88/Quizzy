@@ -1,6 +1,8 @@
 <resources>
     <string name="app_title">Quizzy !</string>
     <string name="app_name">Quizzy</string>
+
+    <!-- MainView -->
     <string name="category_animals">Animals</string>
     <string name="category_politics">Politics</string>
     <string name="category_history">History</string>
@@ -11,6 +13,13 @@
     <string name="category_tv">TV</string>
     <string name="category_science">Science</string>
     <string name="main_pick_a_category">Pick a category</string>
+
+    <!--Loading-->
+    <string name="start_button">Start</string>
+    <string name="loading_content">Loading content...</string>
+
+    <!-- GamePlay -->
+    <string name="game_play_action_bar_text">Game</string>
     <string name="a_answer">A</string>
     <string name="b_answer">B</string>
     <string name="c_answer">C</string>
@@ -18,32 +27,46 @@
     <string name="true_answer">True</string>
     <string name="false_answer">False</string>
     <string name="question_text">Dummy Text</string>
-    <string name="play_again">Play again</string>
-    <string name="back_to_home">Back to home</string>
-    <string name="result">Your result:</string>
+
+    <!--Results-->
+    <string name="results_action_bar_text">Results</string>
+    <string name="btn_play_again">Play again</string>
+    <string name="btn_back_to_home">Back to home</string>
+    <string name="result">Your score :</string>
+    <string name="points">points</string>
     <string name="no_more_data">Sorry, no more data available, please choose other category</string>
+
+    <!--Login-->
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
-    <string name="hint_name">Fullname</string>
     <string name="btn_login">LOGIN</string>
-    <string name="btn_register">REGISTER</string>
     <string name="btn_link_to_register">Not a member? Sign up now.</string>
+
+    <!--Register-->
+    <string name="hint_name">Fullname</string>
+    <string name="btn_register">REGISTER</string>
     <string name="btn_link_to_login">Already registred! Login Me.</string>
     <string name="welcome">Welcome</string>
     <string name="btn_logout">LOGOUT</string>
+
+    <!--Navbar-->
     <string name="name">Fullname</string>
     <string name="scores">Scores</string>
     <string name="settings">Settings</string>
     <string name="fake_name">Jane Doe</string>
     <string name="fake_email">janedoe28@gmail.com</string>
+    <string name="log_out">Log out</string>
+
+    <!--Toasts-->
     <string name="technical_issues_toast_text">Sorry but we\'re experiencing technical issues with connection, please try again later</string>
     <string name="fill_in_mandatory_fields_toast">Please fill in mandatory fields</string>
     <string name="no_user_found_at_login">No user found for the given credentials, please register first</string>
     <string name="invalid_email">Invalid email given, please try again</string>
     <string name="invalid_password">Invalid password given</string>
     <string name="empty_input">Empty input. Please type in the required data</string>
-    <string name="log_out">Log out</string>
     <string name="successful_registration">Registration successful, you can now log in</string>
+
+    <!--Dialogs-->
     <string name="ok">Ok</string>
     <string name="on_log_out_message">Are you sure you want to log out?</string>
     <string name="yes">Yes</string>

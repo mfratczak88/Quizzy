@@ -36,11 +36,6 @@ public class QuestionManagerImplementation implements QuestionManager {
         loadData();
     }
 
-    // All methods regarding questions should be decoupled as far as possible from other classes,
-    // so a class talks only to its immediate neighbours
-    // @TODO add current session questions array
-    // avoid tight coupling with the controller - only one Question at the time,
-
     @Override
     public String getQuestionText() {
         return mCurrentQuestion.getQuestionText();
@@ -76,16 +71,13 @@ public class QuestionManagerImplementation implements QuestionManager {
         return mCategoryName;
     }
 
-    protected void reloadQuestions() throws QuestionManagerDataLoadException{
+    protected void reloadQuestions() throws QuestionManagerDataLoadException {
         mOneSessionQuestions.clear();
         mIterator.reset();
         addOneSessionQuestions();
         setNextQuestion();
     }
 
-    // @TODO: add number of questions to load - default should be 5,
-    //  next time loadData will be called those five will be poped from current quiz array
-    //  and new ones will be loaded
     private void loadData() {
         HttpUtil.httpGetRequest(mURL, new HttpUtil.ResponseListener() {
             @Override
