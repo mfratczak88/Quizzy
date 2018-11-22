@@ -110,11 +110,11 @@ public abstract class AnswerFragment extends Fragment implements TimeOutListener
     }
 
     private HashMap<Button, Integer> getGreenButtonHashMap() {
-        return mUtil.getButtonDrawableHashMap(mCorrectAnswerButton, R.drawable.rounded_button_true);
+        return mUtil.getButtonDrawableHashMap(mCorrectAnswerButton, R.drawable.button_true);
     }
 
     private HashMap<Button, Integer> getRedButtonHashMap(Button incorrectAnswerButton) {
-        return mUtil.getButtonDrawableHashMap(incorrectAnswerButton, R.drawable.rounded_button_false);
+        return mUtil.getButtonDrawableHashMap(incorrectAnswerButton, R.drawable.button_false);
     }
 
     private Command createOnAnswerGivenCallBackCommand(String chosenAnswerButton, boolean wasItCorrect) {

@@ -5,42 +5,9 @@
     android:id="@+id/id_result_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/bg_main"
+    android:background="@drawable/gradient_main"
     tools:layout_editor_absoluteY="25dp">
 
-
-    <TextView
-        android:id="@+id/id_result_text"
-        android:layout_width="320dp"
-        android:layout_height="179dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:background="@drawable/rounded_textview"
-        android:fontFamily="monospace"
-        android:text="@string/result"
-        android:textAlignment="center"
-        android:textSize="30sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/id_correct_answers_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:gravity="center_horizontal|center"
-        android:text="3/5"
-        android:textAlignment="center"
-        android:textSize="40sp"
-        app:layout_constraintBottom_toBottomOf="@+id/id_result_text"
-        app:layout_constraintEnd_toEndOf="@+id/id_result_text"
-        app:layout_constraintStart_toStartOf="@+id/id_result_text"
-        app:layout_constraintTop_toTopOf="@+id/id_result_text" />
 
     <Button
         android:id="@+id/id_back_button"
@@ -48,9 +15,9 @@
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/button"
         android:fontFamily="monospace"
-        android:text="@string/back_to_home"
+        android:text="@string/btn_back_to_home"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -61,10 +28,71 @@
         android:layout_height="70dp"
         android:layout_marginBottom="8dp"
         android:layout_marginStart="8dp"
-        android:background="@drawable/rounded_button"
+        android:background="@drawable/button"
         android:fontFamily="monospace"
-        android:text="@string/play_again"
+        android:text="@string/btn_play_again"
         android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/score_view"
+        android:layout_width="0dp"
+        android:layout_height="114dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:fontFamily="monospace"
+        android:textAlignment="center"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="40sp"
+        android:text="@string/result"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+       />
+
+    <TextView
+        android:id="@+id/points_view"
+        android:layout_width="167dp"
+        android:layout_height="62dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:textAlignment="center"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="40sp"
+        android:text="3/5"
+        android:typeface="monospace"
+        app:layout_constraintBottom_toTopOf="@+id/points_view_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/score_view"
+       />
+
+    <TextView
+        android:id="@+id/points_view_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/points"
+        android:textAlignment="center"
+        android:textColor="@color/primaryTextColor"
+        android:textSize="40sp"
+        app:layout_constraintBottom_toTopOf="@+id/guideline_result"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+    <android.support.constraint.Guideline
+        android:id="@+id/guideline_result"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.70" />
+
 </android.support.constraint.ConstraintLayout>

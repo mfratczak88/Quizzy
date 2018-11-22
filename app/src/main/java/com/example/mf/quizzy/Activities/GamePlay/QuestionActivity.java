@@ -8,10 +8,13 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.example.mf.quizzy.Activities.Results.ResultsActivity;
+import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.Listeners.*;
 import com.example.mf.quizzy.Model.Model;
 import com.example.mf.quizzy.Model.ModelFactory;
@@ -40,8 +43,35 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_question);
         mRingProgressBar = findViewById(R.id.id_progress_bar);
+        setActionBar();
         addFragmentManagers();
         initializeCountDown();
+    }
+
+    private void setActionBar() {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar == null) {
+            return;
+        }
+        actionBar.setTitle(R.string.game_play_action_bar_text);
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                goToMain();
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+
+        }
+    }
+
+    private void goToMain(){
+        startActivity(App.getInstance().getMainIntent(this));
     }
 
     private void addFragmentManagers() {
@@ -196,5 +226,10 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
         } catch (Exception e) {
             Log.d(getClass().toString(), e.toString());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        goToMain();
     }
 }

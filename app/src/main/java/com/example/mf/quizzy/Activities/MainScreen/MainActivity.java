@@ -8,54 +8,48 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
 import com.example.mf.quizzy.Listeners.DataLoadingListener;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.Model.ModelFactory;
 import com.example.mf.quizzy.Model.Model;
-import com.example.mf.quizzy.Activities.GamePlay.QuestionActivity;
 import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.Sessions.SessionManager;
-
 import java.util.Map;
 
-
-public class MainActivity extends AppCompatActivity {
-    private GridLayout mGridLayout;
+public class MainActivity extends AppCompatActivity
+        implements MainScreenFragment.CardViewClickListener, LoadingScreenFragment.PlayClickedListener {
     private Model mModel;
     private DrawerLayout mDrawerLayout;
     private SessionManager mSessionManager;
     private NavigationView mNavigationView;
     private Dialog mDialog = new Dialog();
     private NavigationDrawer mNavigationDrawer = new NavigationDrawer();
+    private boolean mDataLoaded;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setGridLayout();
+        setMainFragment();
         setActionBar();
         setSessionManager();
         mNavigationDrawer.setNavigationDrawer();
         setModel();
     }
 
-    private void setGridLayout() {
-        mGridLayout = findViewById(R.id.gridLayoutID);
-        setEventHandlersForGrid();
+    private void setMainFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.frame_main_screen, new MainScreenFragment())
+                .commit();
     }
-
 
     private void setActionBar() {
         try {
@@ -66,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
             Log.d(getClass().toString(), "Setting the action bar error");
             Toast.makeText(this, R.string.technical_issues_toast_text, Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void setSessionManager() {
@@ -94,15 +87,13 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
-    private void loadModelData(int categoryNumber) {
+    private void loadModelData(String categoryName) {
         if (mModel != null) {
-            String categoryName = getCardViewText(categoryNumber);
             try {
                 mModel.loadData(categoryName, new DataLoadingListener() {
                     @Override
                     public void onDataLoaded() {
-                        launchQuestionActivity();
+                        mDataLoaded = true;
                     }
 
                     @Override
@@ -116,24 +107,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void setEventHandlersForGrid() {
-        for (int i = 0; i < mGridLayout.getChildCount(); i++) {
-            final CardView cardView = (CardView) mGridLayout.getChildAt(i);
-            final int counter = i;
-            cardView.setOnClickListener(new View.OnClickListener() {
-                final int i = counter;
+    private void showLoadingScreen() {
+        replaceMainFragmentWithLoadingFragment();
+    }
 
-                @Override
-                public void onClick(View v) {
-                    loadModelData(i);
-                }
-            });
-        }
+    private void replaceMainFragmentWithLoadingFragment() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_main_screen, new LoadingScreenFragment())
+                .commit();
     }
 
     private void launchQuestionActivity() {
-        startActivity(QuestionActivity.newIntent(this));
-
+        startActivity(App.getInstance().getGamePlayIntent(this));
     }
 
 
@@ -141,27 +127,25 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(this, "Could not load data, please try again", Toast.LENGTH_SHORT).show();
     }
 
-    private String getCardViewText(int number) {
-        try {
-            LinearLayout linearLayout = (LinearLayout) ((CardView) mGridLayout.getChildAt(number)).getChildAt(0);
-
-            for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                if (linearLayout.getChildAt(i) instanceof TextView) {
-                    return ((TextView) linearLayout.getChildAt(i)).getText().toString();
-                }
-            }
-            return null;
-
-        } catch (ClassCastException | NullPointerException e) {
-            return e.getMessage();
-        }
-    }
-
     @Override
     public void onBackPressed() {
         mDialog.showAreYouSureYouWantToQuitDialog();
     }
 
+    @Override
+    public void onCardViewClick(String categoryName) {
+        loadModelData(categoryName);
+        showLoadingScreen();
+    }
+
+    @Override
+    public void onPlayButtonClicked() {
+        if (mDataLoaded) {
+            launchQuestionActivity();
+            return;
+        }
+        couldNotLoadDataToast();
+    }
 
     private void onExit() {
         // todo : add local and backend update here
@@ -210,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     private class NavigationDrawer {
 
         private void setNavigationDrawer() {
@@ -252,6 +237,5 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(getClass().toString(), "Setting user details in the drawer error");
             }
         }
-
     }
 }
