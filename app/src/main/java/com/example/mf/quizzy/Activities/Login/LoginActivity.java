@@ -14,11 +14,12 @@ import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.Activities.Register.RegisterActivity;
 import com.example.mf.quizzy.Sessions.SessionManager;
+import com.example.mf.quizzy.UsersManagement.LoginCredentials;
 import com.example.mf.quizzy.UsersManagement.UsersManager;
 
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity implements AuthenticationListener {
+public class LoginActivity extends AppCompatActivity{
     private Button mLoginButton, mGoToRegisterButton;
     private TextView mEmailText, mPasswordText;
     private SessionManager mSessionManager;
@@ -62,7 +63,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
 
 
     }
-
     private void setLoginButtonListener(){
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,10 +77,20 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     private void loginUser(){
-        // todo: dagger here would help obviously...
         UsersManager usersManager = UsersManager.getInstance(LoginActivity.this);
         try {
-            usersManager.loginUser(mEmailText.getText().toString(), mPasswordText.getText().toString());
+
+            usersManager.loginUser(new LoginCredentials(mEmailText.getText().toString(), mPasswordText.getText().toString()), new AuthenticationListener() {
+                @Override
+                public void onSuccess(Map<String, String> response) {
+                    goToMainActivity();
+                }
+
+                @Override
+                public void onError(String response) {
+                    displayTechnicalIssuesToast();
+                }
+            });
         } catch (Exception e) {
             displayTechnicalIssuesToast();
         }
@@ -106,16 +116,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     private void goToRegisterActivity() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onSuccess(Map<String, String> response) {
-        goToMainActivity();
-    }
-
-    @Override
-    public void onError(String response) {
-        displayInvalidCredentialsToast();
     }
 
     private void displayTechnicalIssuesToast() {

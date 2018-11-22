@@ -1,21 +1,21 @@
 package com.example.mf.quizzy.UsersManagement;
 
 import android.app.Activity;
-import android.arch.lifecycle.LiveData;
 import android.content.Context;
 import android.util.Log;
 
 import com.example.mf.quizzy.Listeners.AuthenticationListener;
+import com.example.mf.quizzy.RoomPersistence.Category;
+import com.example.mf.quizzy.RoomPersistence.Points;
 import com.example.mf.quizzy.RoomPersistence.User;
 import com.example.mf.quizzy.RoomPersistence.UserRepository;
 import com.example.mf.quizzy.Sessions.SessionManager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.List;
 import java.util.Map;
 
-public class UsersManager implements AuthenticationListener {
+public class UsersManager {
     private AuthenticationListener mAuthenticationListener;
     private UserRepository mUserRepository;
     private User mCurrentUser;
@@ -28,24 +28,21 @@ public class UsersManager implements AuthenticationListener {
             sInstance = new UsersManager(context);
             return sInstance;
         }
-        sInstance.setAuthenticationListener((AuthenticationListener) context);
         return sInstance;
     }
 
     private UsersManager(Context context) {
-        this.mAuthenticationListener = (AuthenticationListener) context;
         mUserRepository = new UserRepository(context);
         mSessionManager = new SessionManager(context);
     }
 
-    public void loginUser(String email, String password) throws Exception {
-        loadFromLocalDb(email, password);
-        if (mCurrentUser != null) {
-            mSessionManager.createLoginSession(mCurrentUser.getName(), mCurrentUser.getEmail());
-            mAuthenticationListener.onSuccess(null);
+    public void loginUser(LoginCredentials loginCredentials, AuthenticationListener listener) throws Exception {
+        setAuthenticationListener(listener);
+        if (couldLoadLocally(loginCredentials)) {
             return;
         }
-        mBackendConnector = BackendConnectorFactory.getLoginConnector(getNewUserObjectForLogin(email, password), new BackendConnector.Listener() {
+
+        mBackendConnector = BackendConnectorFactory.getLoginConnector(getNewUserObjectForLogin(loginCredentials), new BackendConnector.Listener() {
             @Override
             public void onSuccess(Map<String, String> response) {
                 mCurrentUser = mapServerResponseToUserObject(response);
@@ -64,8 +61,10 @@ public class UsersManager implements AuthenticationListener {
         mBackendConnector.connect();
     }
 
-    public void registerUser(String name, String email, String password) {
-        mBackendConnector = BackendConnectorFactory.getRegistrationConnector(getNewUserObjectForRegistration(name, email, password), new BackendConnector.Listener() {
+
+    public void registerUser(RegistrationCredentials registrationCredentials, AuthenticationListener listener) throws Exception {
+        setAuthenticationListener(listener);
+        mBackendConnector = BackendConnectorFactory.getRegistrationConnector(getNewUserObjectForRegistration(registrationCredentials), new BackendConnector.Listener() {
             @Override
             public void onSuccess(Map<String, String> response) {
                 mCurrentUser = mBackendConnector.getUser();
@@ -78,31 +77,63 @@ public class UsersManager implements AuthenticationListener {
                 mAuthenticationListener.onError(error);
             }
         });
-       mBackendConnector.connect();
+        mBackendConnector.connect();
     }
 
-    private User getNewUserObjectForRegistration(String name, String email, String password) {
+
+    // todo : this method is way to long, cut it down.
+    public void addUserPoints(String categoryName, int amountOfPoints) throws Exception {
+        Category category = mUserRepository.getCategoryByName(categoryName);
+        if (category == null) {
+            throw new Exception("No category of name " + categoryName);
+        }
+        Points points = mUserRepository.getPointsForUserIdInCategory(mCurrentUser.getId(), category.getId());
+
+        if (points == null) {
+            points = new Points();
+            points.setCategoryId(category.getId());
+            points.setUserId(mCurrentUser.getId());
+            points.setTotalPoints(amountOfPoints);
+
+        } else {
+            points.setTotalPoints(points.getTotalPoints() + amountOfPoints);
+        }
+        mUserRepository.insertPoints(points);
+    }
+
+
+    private boolean couldLoadLocally(LoginCredentials loginCredentials) {
+        loadFromLocalDb(loginCredentials);
+        if (mCurrentUser != null) {
+            mSessionManager.createLoginSession(mCurrentUser.getName(), mCurrentUser.getEmail());
+            mAuthenticationListener.onSuccess(null);
+            return true;
+        }
+        return false;
+    }
+
+    private User getNewUserObjectForRegistration(RegistrationCredentials registrationCredentials) {
         User user = new User();
-        user.setName(name);
-        user.setPassword(password);
-        user.setEmail(email);
+        user.setName(registrationCredentials.getName());
+        user.setPassword(registrationCredentials.getPassword());
+        user.setEmail(registrationCredentials.getEmail());
         return user;
     }
 
 
-    private User getNewUserObjectForLogin(String email, String password) {
+    private User getNewUserObjectForLogin(LoginCredentials loginCredentials) {
         User user = new User();
-        user.setEmail(email);
-        user.setPassword(password);
+        user.setEmail(loginCredentials.getEmail());
+        user.setPassword(loginCredentials.getPassword());
         return user;
     }
 
-    private void loadFromLocalDb(String email, String password) {
-        User user = mUserRepository.getUserByEmail(email);
+    private void loadFromLocalDb(LoginCredentials loginCredentials) {
+        User user = mUserRepository.getUserByEmail(loginCredentials.getEmail());
         if (user == null)
             return;
 
-        if (isPasswordGivenAMatch(password, user.getPassword())) {
+        if (isPasswordGivenAMatch(loginCredentials.getPassword(), user.getPassword())) {
             mCurrentUser = user;
         }
     }
@@ -121,15 +152,6 @@ public class UsersManager implements AuthenticationListener {
         return mapper.mapResponseToUser();
     }
 
-    @Override
-    public void onSuccess(Map<String, String> response) {
-
-    }
-
-    @Override
-    public void onError(String response) {
-        mAuthenticationListener.onError(response);
-    }
 
     private void addUserToDb(final User user) {
         Activity activity = (Activity) mAuthenticationListener;
@@ -149,11 +171,11 @@ public class UsersManager implements AuthenticationListener {
         private User mUser;
         private Method[] mUserMethods;
         private Field[] mUserFields;
-        private Map<String, String> mReponse;
+        private Map<String, String> mResponse;
 
         private ResponseToUserMapper(User user, Map<String, String> response) {
             mUser = user;
-            mReponse = response;
+            mResponse = response;
             mUserFields = getUserFields();
             mUserMethods = getUserMethods();
         }
@@ -161,7 +183,7 @@ public class UsersManager implements AuthenticationListener {
         private User mapResponseToUser() {
             for (Field userField : mUserFields) {
                 String fieldName = userField.getName();
-                String responseValue = mReponse.get(fieldName);
+                String responseValue = mResponse.get(fieldName);
 
                 if (responseValue != null) {
                     tryToSetUserField(responseValue, fieldName);
