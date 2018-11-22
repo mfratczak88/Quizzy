@@ -1,8 +1,6 @@
 package com.example.mf.quizzy.Activities.MainScreen;
 
 import android.content.DialogInterface;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -10,34 +8,23 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
 import com.example.mf.quizzy.Listeners.DataLoadingListener;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.Model.ModelFactory;
 import com.example.mf.quizzy.Model.Model;
-import com.example.mf.quizzy.Activities.GamePlay.QuestionActivity;
 import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.Sessions.SessionManager;
-
 import java.util.Map;
-
-import io.netopen.hotbitmapgg.library.view.RingProgressBar;
-
 
 public class MainActivity extends AppCompatActivity
         implements MainScreenFragment.CardViewClickListener, LoadingScreenFragment.PlayClickedListener {
-    private GridLayout mGridLayout;
     private Model mModel;
     private DrawerLayout mDrawerLayout;
     private SessionManager mSessionManager;
@@ -47,7 +34,6 @@ public class MainActivity extends AppCompatActivity
     private boolean mDataLoaded;
 
     @Override
-
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -132,17 +118,14 @@ public class MainActivity extends AppCompatActivity
                 .commit();
     }
 
-
     private void launchQuestionActivity() {
         startActivity(App.getInstance().getGamePlayIntent(this));
-
     }
 
 
     private void couldNotLoadDataToast() {
         Toast.makeText(this, "Could not load data, please try again", Toast.LENGTH_SHORT).show();
     }
-
 
     @Override
     public void onBackPressed() {

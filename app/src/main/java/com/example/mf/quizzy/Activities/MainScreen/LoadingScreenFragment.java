@@ -1,6 +1,6 @@
 package com.example.mf.quizzy.Activities.MainScreen;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +8,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,9 +24,9 @@ public class LoadingScreenFragment extends Fragment {
         void onPlayButtonClicked();
     }
 
-    PlayClickedListener mListener;
-    View mView;
-    Button mStartButton;
+    private PlayClickedListener mListener;
+    private View mView;
+    private Button mStartButton;
     private Handler mCountDownHandler;
     private int mTimeProgress = 0;
     private RingProgressBar mLoadingBar;
@@ -36,7 +37,7 @@ public class LoadingScreenFragment extends Fragment {
         try {
             mListener = (PlayClickedListener) context;
         } catch (ClassCastException e) {
-
+            throw new ClassCastException("Class must implement the PlayClickedListener interface");
         }
         super.onAttach(context);
     }
@@ -93,7 +94,7 @@ public class LoadingScreenFragment extends Fragment {
                         mCountDownHandler.sendEmptyMessage(0);
                     }
                 } catch (InterruptedException e) {
-
+                    Log.d(getClass().toString(), "Interupted ringbar");
                 }
             }
         });
