@@ -1,11 +1,11 @@
-package com.example.mf.quizzy.Model;
+package com.example.mf.quizzy.model;
 
 // Questions taken from: https://opentdb.com/
 // Specific API numbers collections corresponding to certain sets
 // are in strings.xml file
 
-import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Listeners.DataLoadingListener;
+import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.listeners.DataLoadingListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;

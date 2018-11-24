@@ -8,14 +8,14 @@ import android.util.Log;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
-import com.example.mf.quizzy.Activities.Login.LoginActivity;
-import com.example.mf.quizzy.Activities.MainScreen.MainActivity;
-import com.example.mf.quizzy.Activities.GamePlay.QuestionActivity;
-import com.example.mf.quizzy.Activities.Register.RegisterActivity;
-import com.example.mf.quizzy.Activities.Results.ResultsActivity;
-import com.example.mf.quizzy.Config.AppConfig;
-import com.example.mf.quizzy.RoomPersistence.Category;
-import com.example.mf.quizzy.RoomPersistence.UserRepository;
+import com.example.mf.quizzy.activities.login.LoginActivity;
+import com.example.mf.quizzy.activities.mainScreen.MainActivity;
+import com.example.mf.quizzy.activities.gameplay.GamePlayActivity;
+import com.example.mf.quizzy.activities.register.RegisterActivity;
+import com.example.mf.quizzy.activities.results.ResultsActivity;
+import com.example.mf.quizzy.config.AppConfig;
+import com.example.mf.quizzy.roomPersistence.Category;
+import com.example.mf.quizzy.roomPersistence.UserRepository;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -65,7 +65,7 @@ public class App extends Application {
     }
 
     public Intent getGamePlayIntent(Context context) {
-        return new Intent(context, QuestionActivity.class);
+        return new Intent(context, GamePlayActivity.class);
     }
 
     public Intent getResultIntent(Context context) {

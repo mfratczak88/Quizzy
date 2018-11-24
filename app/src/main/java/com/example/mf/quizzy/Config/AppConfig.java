@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Config;
+package com.example.mf.quizzy.config;
 
 import java.util.HashMap;
 import java.util.Map;

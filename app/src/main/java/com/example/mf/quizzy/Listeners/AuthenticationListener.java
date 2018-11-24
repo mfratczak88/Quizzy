@@ -1,6 +1,4 @@
-package com.example.mf.quizzy.Listeners;
-
-import org.json.JSONObject;
+package com.example.mf.quizzy.listeners;
 
 import java.util.Map;
 

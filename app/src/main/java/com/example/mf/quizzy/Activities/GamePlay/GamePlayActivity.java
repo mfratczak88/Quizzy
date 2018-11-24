@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.GamePlay;
+package com.example.mf.quizzy.activities.gameplay;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,18 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
-import com.example.mf.quizzy.Activities.Results.ResultsActivity;
+import com.example.mf.quizzy.activities.results.ResultsActivity;
 import com.example.mf.quizzy.App;
-import com.example.mf.quizzy.Listeners.*;
-import com.example.mf.quizzy.Model.Model;
-import com.example.mf.quizzy.Model.ModelFactory;
+import com.example.mf.quizzy.listeners.*;
+import com.example.mf.quizzy.model.Model;
+import com.example.mf.quizzy.model.ModelFactory;
 import com.example.mf.quizzy.R;
+import com.example.mf.quizzy.usersManagement.UsersManager;
 
 import java.util.HashMap;
 
 import io.netopen.hotbitmapgg.library.view.RingProgressBar;
 
-public class QuestionActivity extends AppCompatActivity implements AnswerShownListener {
+public class GamePlayActivity extends AppCompatActivity implements AnswerShownListener {
     private HashMap<Integer, String> mAnswerHistory = new HashMap<>();
     private int mCorrectAnswers;
     private int mQuestionsCounter;
@@ -32,9 +33,11 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
     private Handler mCountDownHandler;
     private int mTimeProgress = 0;
     private RingProgressBar mRingProgressBar;
+    private int mTotalPointsEarned = 0;
     private static Thread mCountDownThread;
 
-    public QuestionActivity() {
+
+    public GamePlayActivity() {
         mModel = ModelFactory.getFactory().getModel();
     }
 
@@ -150,7 +153,7 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
     }
 
     public static Intent newIntent(Context context) {
-        return new Intent(context, QuestionActivity.class);
+        return new Intent(context, GamePlayActivity.class);
     }
 
     @Override
@@ -158,6 +161,7 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
         onAnswerShown();
         addAnswerToAnswersHistory(answerGiven);
         if (wasItCorrect) {
+            incrementPointsEarned();
             incrementCorrectAnswers();
         }
     }
@@ -177,6 +181,10 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
 
     private void addAnswerToAnswersHistory(String answerGiven) {
         mAnswerHistory.put(mQuestionsCounter, answerGiven);
+    }
+
+    private void incrementPointsEarned(){
+        mTotalPointsEarned += 10;
     }
 
     private void incrementQuestionCounter() {
@@ -199,10 +207,23 @@ public class QuestionActivity extends AppCompatActivity implements AnswerShownLi
 
     private void moveToNextQuestion() {
         if (mModel.getCurrentQuestionManager().isItLastQuestion()) {
+            storeUserPoints();
             displayResults();
         }
         setNextQuestion();
         replaceFragments();
+    }
+
+    private void storeUserPoints(){
+        try{
+            UsersManager.getInstance(this).addUserPoints(mModel.getCurrentQuestionManager().getCategoryName(), getTotalPointsEarned());
+        }catch(Exception e){
+            Log.d(getClass().toString(), "Storing user points exception");
+        }
+    }
+
+    private int getTotalPointsEarned(){
+        return mTotalPointsEarned;
     }
 
     private void resetCounter() {

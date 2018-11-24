@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Model;
+package com.example.mf.quizzy.model;
 
 import android.text.Html;
 
@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.example.mf.quizzy.Listeners.DataLoadingListener;
-import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Util.HttpUtil;
+import com.example.mf.quizzy.listeners.DataLoadingListener;
+import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.util.HttpUtil;
 
 public class QuestionManagerImplementation implements QuestionManager {
 

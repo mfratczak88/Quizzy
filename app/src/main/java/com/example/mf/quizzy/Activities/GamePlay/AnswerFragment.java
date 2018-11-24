@@ -1,9 +1,9 @@
-package com.example.mf.quizzy.Activities.GamePlay;
+package com.example.mf.quizzy.activities.gameplay;
 
 import android.content.Context;
 
-import com.example.mf.quizzy.Listeners.AnswerShownListener;
-import com.example.mf.quizzy.Listeners.TimeOutListener;
+import com.example.mf.quizzy.listeners.AnswerShownListener;
+import com.example.mf.quizzy.listeners.TimeOutListener;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,8 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-import com.example.mf.quizzy.Model.Model;
-import com.example.mf.quizzy.Model.ModelFactory;
+import com.example.mf.quizzy.model.Model;
+import com.example.mf.quizzy.model.ModelFactory;
 import com.example.mf.quizzy.R;
 
 import java.lang.reflect.InvocationTargetException;

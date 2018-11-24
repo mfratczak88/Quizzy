@@ -1,10 +1,10 @@
-package com.example.mf.quizzy.UsersManagement;
+package com.example.mf.quizzy.usersManagement;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.mf.quizzy.Config.AppConfig;
-import com.example.mf.quizzy.RoomPersistence.User;
-import com.example.mf.quizzy.Util.HttpUtil;
+import com.example.mf.quizzy.config.AppConfig;
+import com.example.mf.quizzy.roomPersistence.User;
+import com.example.mf.quizzy.util.HttpUtil;
 
 import org.json.JSONException;
 import org.json.JSONObject;

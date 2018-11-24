@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:name=".App">
-        <activity android:name=".Activities.Login.LoginActivity"
+        <activity android:name=".activities.login.LoginActivity"
             android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,10 +23,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activities.MainScreen.MainActivity"/>
-        <activity android:name=".Activities.GamePlay.QuestionActivity"/>
-        <activity android:name=".Activities.Results.ResultsActivity"/>
-        <activity android:name=".Activities.Register.RegisterActivity"/>
+        <activity android:name=".activities.mainScreen.MainActivity"/>
+        <activity android:name=".activities.gameplay.GamePlayActivity"/>
+        <activity android:name=".activities.results.ResultsActivity"/>
+        <activity android:name=".activities.register.RegisterActivity"/>
     </application>
 
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Sessions;
+package com.example.mf.quizzy.sessions;
 
 import android.content.Context;
 import android.content.SharedPreferences;

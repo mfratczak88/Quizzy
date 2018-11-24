@@ -1,18 +1,21 @@
-package com.example.mf.quizzy.UsersManagement;
+package com.example.mf.quizzy.usersManagement;
 
 import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
-import com.example.mf.quizzy.Listeners.AuthenticationListener;
-import com.example.mf.quizzy.RoomPersistence.Category;
-import com.example.mf.quizzy.RoomPersistence.Points;
-import com.example.mf.quizzy.RoomPersistence.User;
-import com.example.mf.quizzy.RoomPersistence.UserRepository;
-import com.example.mf.quizzy.Sessions.SessionManager;
+import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.listeners.AuthenticationListener;
+import com.example.mf.quizzy.roomPersistence.Category;
+import com.example.mf.quizzy.roomPersistence.Points;
+import com.example.mf.quizzy.roomPersistence.User;
+import com.example.mf.quizzy.roomPersistence.UserRepository;
+import com.example.mf.quizzy.sessions.SessionManager;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class UsersManager {
@@ -22,6 +25,7 @@ public class UsersManager {
     private SessionManager mSessionManager;
     private static UsersManager sInstance;
     private BackendConnector mBackendConnector;
+    private List<Points> mPoints = new ArrayList<>();
 
     public static UsersManager getInstance(Context context) {
         if (sInstance == null) {
@@ -80,8 +84,7 @@ public class UsersManager {
         mBackendConnector.connect();
     }
 
-
-    // todo : this method is way to long, cut it down.
+    // todo : this method is way too long, cut it down.
     public void addUserPoints(String categoryName, int amountOfPoints) throws Exception {
         Category category = mUserRepository.getCategoryByName(categoryName);
         if (category == null) {
@@ -98,7 +101,20 @@ public class UsersManager {
         } else {
             points.setTotalPoints(points.getTotalPoints() + amountOfPoints);
         }
-        mUserRepository.insertPoints(points);
+       mUserRepository.insertPoints(points);
+    }
+
+    public boolean isUserLoggedIn(){
+        if(mSessionManager.isLoggedIn()){
+           loadUserFromSessionManager();
+           return true;
+        }
+        return false;
+    }
+
+    private void loadUserFromSessionManager(){
+        String email = mSessionManager.getUserDetails().get(SessionManager.KEY_EMAIL);
+        mCurrentUser = mUserRepository.getUserByEmail(email);
     }
 
 

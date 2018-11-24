@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.MainScreen;
+package com.example.mf.quizzy.activities.mainScreen;
 
 import android.content.Context;
 import android.os.Bundle;

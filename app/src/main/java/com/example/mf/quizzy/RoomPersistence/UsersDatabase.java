@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.RoomPersistence;
+package com.example.mf.quizzy.roomPersistence;
 
 import android.arch.persistence.room.Database;
 import android.arch.persistence.room.RoomDatabase;

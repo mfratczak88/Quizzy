@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.Register;
+package com.example.mf.quizzy.activities.register;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -13,18 +13,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mf.quizzy.Listeners.AuthenticationListener;
+import com.example.mf.quizzy.listeners.AuthenticationListener;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.UsersManagement.RegistrationCredentials;
-import com.example.mf.quizzy.UsersManagement.UsersManager;
-import com.example.mf.quizzy.Util.Validator;
+import com.example.mf.quizzy.usersManagement.RegistrationCredentials;
+import com.example.mf.quizzy.usersManagement.UsersManager;
+import com.example.mf.quizzy.util.Validator;
 
 import java.util.Map;
 
 public class RegisterActivity extends AppCompatActivity {
     private Button mRegisterButton, mBackButton;
     private TextView mNameText, mEmailText, mPasswordText;
+    private UsersManager mUsersManager;
     private InputValidator mInputValidator = new InputValidator();
 
     @Override
@@ -37,6 +38,9 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
+    private void loadUsersManager(){
+        mUsersManager = UsersManager.getInstance(this);
+    }
     private void setButtonsAndTexts() {
         mNameText = findViewById(R.id.register_name);
         mEmailText = findViewById(R.id.register_email);
@@ -64,10 +68,9 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void registerUser() {
-        UsersManager userManager = UsersManager.getInstance(RegisterActivity.this);
         try {
             RegistrationCredentials registrationCredentials = new RegistrationCredentials(mNameText.getText().toString(), mEmailText.getText().toString(), mPasswordText.getText().toString());
-            userManager.registerUser(registrationCredentials, new AuthenticationListener() {
+            mUsersManager.registerUser(registrationCredentials, new AuthenticationListener() {
                 @Override
                 public void onSuccess(Map<String, String> response) {
                     showSuccessfulRegistrationDialog();

@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Listeners;
+package com.example.mf.quizzy.listeners;
 
 public interface AnswerShownListener {
     void onAnswerGiven(String answerGiven, boolean wasItCorrect);

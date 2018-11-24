@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.UsersManagement;
+package com.example.mf.quizzy.usersManagement;
 
 public class LoginCredentials {
     private String email;

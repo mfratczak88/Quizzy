@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Exceptions;
+package com.example.mf.quizzy.exceptions;
 
 public class QuestionManagerDataLoadException extends Exception {
 

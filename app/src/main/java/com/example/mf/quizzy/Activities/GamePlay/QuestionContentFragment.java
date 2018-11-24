@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.GamePlay;
+package com.example.mf.quizzy.activities.gameplay;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,10 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.mf.quizzy.Model.Model;
-import com.example.mf.quizzy.Model.ModelFactory;
-import com.example.mf.quizzy.Model.QuestionBank;
-import com.example.mf.quizzy.Model.QuestionManager;
+import com.example.mf.quizzy.model.Model;
+import com.example.mf.quizzy.model.ModelFactory;
 import com.example.mf.quizzy.R;
 
 public class QuestionContentFragment extends Fragment {

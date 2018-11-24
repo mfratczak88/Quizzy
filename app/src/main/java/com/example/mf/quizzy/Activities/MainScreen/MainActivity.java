@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.MainScreen;
+package com.example.mf.quizzy.activities.mainScreen;
 
 import android.content.DialogInterface;
 import android.support.design.widget.NavigationView;
@@ -14,13 +14,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Listeners.DataLoadingListener;
+import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.listeners.DataLoadingListener;
 import com.example.mf.quizzy.App;
-import com.example.mf.quizzy.Model.ModelFactory;
-import com.example.mf.quizzy.Model.Model;
+import com.example.mf.quizzy.model.ModelFactory;
+import com.example.mf.quizzy.model.Model;
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.Sessions.SessionManager;
+import com.example.mf.quizzy.sessions.SessionManager;
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
@@ -206,9 +206,12 @@ public class MainActivity extends AppCompatActivity
 
         private void setOnClickHandlers() {
             setOnLogOutItemClickedHandler();
-
+            setOnScoresItemClickedHandler();
         }
 
+        private void setOnScoresItemClickedHandler(){
+
+        }
 
         private void setOnLogOutItemClickedHandler() {
             final MenuItem logOut = mNavigationView.getMenu().findItem(R.id.log_out);
