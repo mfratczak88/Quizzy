@@ -2,6 +2,7 @@ package com.example.mf.quizzy.usersManagement;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Point;
 import android.util.Log;
 
 import com.example.mf.quizzy.App;
@@ -15,6 +16,7 @@ import com.example.mf.quizzy.sessions.SessionManager;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -101,18 +103,34 @@ public class UsersManager {
         } else {
             points.setTotalPoints(points.getTotalPoints() + amountOfPoints);
         }
-       mUserRepository.insertPoints(points);
+        mUserRepository.insertPoints(points);
     }
 
-    public boolean isUserLoggedIn(){
-        if(mSessionManager.isLoggedIn()){
-           loadUserFromSessionManager();
-           return true;
+    public boolean isUserLoggedIn() {
+        if (mSessionManager.isLoggedIn()) {
+            loadUserFromSessionManager();
+            return true;
         }
         return false;
     }
 
-    private void loadUserFromSessionManager(){
+    public Map<String, String> getUserCategoryAndPointsMap() {
+        Map<String, String> userPointsMap = new HashMap<>();
+        List<Category> categories = mUserRepository.getAllCategories();
+
+        for (Category category : categories) {
+            Points pointsInSingleCategory = mUserRepository.getPointsForUserIdInCategory(mCurrentUser.getId(), category.getId());
+
+            if (pointsInSingleCategory != null) {
+                userPointsMap.put(category.getName(), String.valueOf(pointsInSingleCategory.getTotalPoints()));
+            } else {
+                userPointsMap.put(category.getName(), "0");
+            }
+        }
+        return userPointsMap;
+    }
+
+    private void loadUserFromSessionManager() {
         String email = mSessionManager.getUserDetails().get(SessionManager.KEY_EMAIL);
         mCurrentUser = mUserRepository.getUserByEmail(email);
     }
