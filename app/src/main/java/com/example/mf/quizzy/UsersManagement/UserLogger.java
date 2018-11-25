@@ -2,6 +2,7 @@ package com.example.mf.quizzy.usersManagement;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.config.AppConfig;
 import com.example.mf.quizzy.roomPersistence.User;
 import com.example.mf.quizzy.util.HttpUtil;
@@ -32,7 +33,7 @@ class UserLogger  implements BackendConnector{
     }
 
     private void login() {
-        HttpUtil.httpPostRequest(AppConfig.URL_LOGIN, createRequestBody(), new Response.Listener<String>() {
+        HttpUtil.httpPostRequest(App.getInstance().getAppConfig().getLoginUrl(), createRequestBody(), new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 Map<String, String> mapResponse = HttpUtil.string2Map(response);

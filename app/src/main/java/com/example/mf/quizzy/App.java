@@ -3,6 +3,7 @@ package com.example.mf.quizzy;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.util.Log;
 
 import com.android.volley.Request;
@@ -17,20 +18,29 @@ import com.example.mf.quizzy.config.AppConfig;
 import com.example.mf.quizzy.roomPersistence.Category;
 import com.example.mf.quizzy.roomPersistence.UserRepository;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class App extends Application {
     private static RequestQueue sRequestQueue;
     private static App sInstance;
-    public static final AppConfig APP_CONFIG = new AppConfig();
+    private Map<String, String> mCategories = new HashMap<>();
+    private AppConfig mAppConfig;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
         sRequestQueue = Volley.newRequestQueue(getApplicationContext());
+        mAppConfig = new AppConfig(getApplicationContext());
+    }
 
+    public AppConfig getAppConfig(){
+        return mAppConfig;
     }
 
     public void addToRequestQueue(Request request) {
@@ -44,7 +54,6 @@ public class App extends Application {
         return sRequestQueue;
     }
 
-    // no real way to make it a singleton here...
     public static synchronized App getInstance() {
         if (sInstance == null) {
             sInstance = new App();
@@ -72,29 +81,5 @@ public class App extends Application {
         return new Intent(context, ResultsActivity.class);
     }
 
-    private void initDB() {
-        UserRepository userRepository = new UserRepository(this);
 
-        ArrayList<Category> categoryArrayList = new ArrayList<>();
-
-        Category category;
-
-        for (Map.Entry<String, String> entry : APP_CONFIG.CATEGORIES.entrySet()) {
-            category = new Category();
-            category.setName(entry.getKey());
-            category.setExternalId(entry.getValue());
-            categoryArrayList.add(category);
-        }
-
-        for (Category c : categoryArrayList) {
-            try {
-                Category dbCategory = userRepository.getCategoryByExternalId(c.getExternalId());
-                if (dbCategory == null) {
-                    userRepository.insertCategory(c);
-                }
-            } catch (Exception e) {
-                Log.d(getClass().toString(), e.toString());
-            }
-        }
-    }
 }

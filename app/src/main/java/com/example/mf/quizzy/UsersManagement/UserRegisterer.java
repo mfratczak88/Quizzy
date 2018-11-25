@@ -2,6 +2,7 @@ package com.example.mf.quizzy.usersManagement;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.config.AppConfig;
 import com.example.mf.quizzy.roomPersistence.User;
 import com.example.mf.quizzy.util.HttpUtil;
@@ -42,7 +43,7 @@ class UserRegisterer implements BackendConnector {
     private void register() {
         try {
             final JSONObject requestBody = createRequestBody();
-            HttpUtil.httpPostRequest(AppConfig.URL_REGISTER, requestBody, new Response.Listener<String>() {
+            HttpUtil.httpPostRequest(App.getInstance().getAppConfig().getRegisterUrl(), requestBody, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     mListener.onSuccess(HttpUtil.string2Map(response));
