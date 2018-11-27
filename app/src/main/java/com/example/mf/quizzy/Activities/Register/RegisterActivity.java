@@ -1,10 +1,11 @@
-package com.example.mf.quizzy.Activities.Register;
+package com.example.mf.quizzy.activities.register;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.ContextThemeWrapper;
 import android.view.View;
@@ -12,17 +13,19 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mf.quizzy.Listeners.AuthenticationListener;
+import com.example.mf.quizzy.listeners.AuthenticationListener;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.UsersManagement.UsersManager;
-import com.example.mf.quizzy.Util.Validator;
+import com.example.mf.quizzy.usersManagement.RegistrationCredentials;
+import com.example.mf.quizzy.usersManagement.UsersManager;
+import com.example.mf.quizzy.util.Validator;
 
 import java.util.Map;
 
-public class RegisterActivity extends AppCompatActivity implements AuthenticationListener {
+public class RegisterActivity extends AppCompatActivity {
     private Button mRegisterButton, mBackButton;
     private TextView mNameText, mEmailText, mPasswordText;
+    private UsersManager mUsersManager;
     private InputValidator mInputValidator = new InputValidator();
 
     @Override
@@ -35,6 +38,9 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
 
     }
 
+    private void loadUsersManager(){
+        mUsersManager = UsersManager.getInstance(this);
+    }
     private void setButtonsAndTexts() {
         mNameText = findViewById(R.id.register_name);
         mEmailText = findViewById(R.id.register_email);
@@ -62,8 +68,22 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
     }
 
     private void registerUser() {
-        UsersManager userManager = UsersManager.getInstance(RegisterActivity.this);
-        userManager.registerUser(mNameText.getText().toString(), mEmailText.getText().toString(), mPasswordText.getText().toString());
+        try {
+            RegistrationCredentials registrationCredentials = new RegistrationCredentials(mNameText.getText().toString(), mEmailText.getText().toString(), mPasswordText.getText().toString());
+            mUsersManager.registerUser(registrationCredentials, new AuthenticationListener() {
+                @Override
+                public void onSuccess(Map<String, String> response) {
+                    showSuccessfulRegistrationDialog();
+                }
+
+                @Override
+                public void onError(String response) {
+                    showTechnicalProblemsToast();
+                }
+            });
+        } catch (Exception e) {
+            Log.d(getClass().toString(), e.toString());
+        }
     }
 
 
@@ -88,14 +108,9 @@ public class RegisterActivity extends AppCompatActivity implements Authenticatio
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void onSuccess(Map<String, String> response) {
-        showSuccessfulRegistrationDialog();
-    }
-
-    @Override
-    public void onError(String response) {
-
+    //todo encapsulate toasts in a separate class and put it in App as inner class
+    private void showTechnicalProblemsToast() {
+        Toast.makeText(this, R.string.technical_issues_toast_text, Toast.LENGTH_SHORT).show();
     }
 
     private void showSuccessfulRegistrationDialog() {

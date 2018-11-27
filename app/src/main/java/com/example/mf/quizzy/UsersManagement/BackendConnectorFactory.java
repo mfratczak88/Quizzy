@@ -1,8 +1,6 @@
-package com.example.mf.quizzy.UsersManagement;
+package com.example.mf.quizzy.usersManagement;
 
-import com.example.mf.quizzy.RoomPersistence.User;
-
-import java.util.Map;
+import com.example.mf.quizzy.roomPersistence.User;
 
 abstract class BackendConnectorFactory {
 

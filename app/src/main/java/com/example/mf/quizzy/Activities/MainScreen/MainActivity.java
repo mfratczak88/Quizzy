@@ -1,7 +1,9 @@
-package com.example.mf.quizzy.Activities.MainScreen;
+package com.example.mf.quizzy.activities.mainScreen;
 
 import android.content.DialogInterface;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -14,42 +16,41 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Listeners.DataLoadingListener;
+
+import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.listeners.DataLoadingListener;
 import com.example.mf.quizzy.App;
-import com.example.mf.quizzy.Model.ModelFactory;
-import com.example.mf.quizzy.Model.Model;
+import com.example.mf.quizzy.model.ModelFactory;
+import com.example.mf.quizzy.model.Model;
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.Sessions.SessionManager;
+import com.example.mf.quizzy.sessions.SessionManager;
+
 import java.util.Map;
 
 public class MainActivity extends AppCompatActivity
-        implements MainScreenFragment.CardViewClickListener, LoadingScreenFragment.PlayClickedListener {
+        implements CardViewFragment.CardViewClickListener, LoadingScreenFragment.PlayClickedListener {
     private Model mModel;
+    private static final String MENU_BAR_TITLE = "Quizzy";
     private DrawerLayout mDrawerLayout;
     private SessionManager mSessionManager;
     private NavigationView mNavigationView;
     private Dialog mDialog = new Dialog();
     private NavigationDrawer mNavigationDrawer = new NavigationDrawer();
+    private MainScreenFragmentManager mMainScreenFragmentManager = new MainScreenFragmentManager();
     private boolean mDataLoaded;
+    private Fragment mCurrentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setMainFragment();
+        setFragment(mMainScreenFragmentManager.getCardViewFragment());
         setActionBar();
         setSessionManager();
         mNavigationDrawer.setNavigationDrawer();
         setModel();
     }
 
-    private void setMainFragment() {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(R.id.frame_main_screen, new MainScreenFragment())
-                .commit();
-    }
 
     private void setActionBar() {
         try {
@@ -108,13 +109,16 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showLoadingScreen() {
-        replaceMainFragmentWithLoadingFragment();
+        setFragment(new LoadingScreenFragment());
     }
 
-    private void replaceMainFragmentWithLoadingFragment() {
+
+    private void setFragment(Fragment fragment) {
+        mCurrentFragment = fragment;
+        assert (fragment != null);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_main_screen, new LoadingScreenFragment())
+                .replace(R.id.frame_main_screen, fragment)
                 .commit();
     }
 
@@ -129,7 +133,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        mDialog.showAreYouSureYouWantToQuitDialog();
+        if (mCurrentFragment instanceof CardViewFragment) {
+            mDialog.showAreYouSureYouWantToQuitDialog();
+            return;
+        }
+        setFragment(mMainScreenFragmentManager.getCardViewFragment());
+        setActionBarDefaultTitle();
+    }
+
+    private void setActionBarDefaultTitle(){
+        try{
+            getSupportActionBar().setTitle(MENU_BAR_TITLE);
+        }catch (Exception e){
+            Log.d("MainActivity", "Could not set ActionBar main title");
+        }
     }
 
     @Override
@@ -200,27 +217,44 @@ public class MainActivity extends AppCompatActivity
         private void setNavigationDrawer() {
             mDrawerLayout = findViewById(R.id.drawer);
             mNavigationView = findViewById(R.id.nav_view);
-            setUserDetails();
-            setOnClickHandlers();
-        }
-
-        private void setOnClickHandlers() {
-            setOnLogOutItemClickedHandler();
-
-        }
-
-
-        private void setOnLogOutItemClickedHandler() {
-            final MenuItem logOut = mNavigationView.getMenu().findItem(R.id.log_out);
-            logOut.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
                 @Override
-                public boolean onMenuItemClick(MenuItem item) {
-                    mDrawerLayout.closeDrawers();
-                    mDialog.showAreYouSureYouWantToLogOutDialog();
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    if (menuItem.getItemId() == R.id.log_out) {
+                        onLogOutSelected();
+                    } else {
+                        onItemSelected(menuItem);
+                    }
                     return true;
                 }
             });
+            setUserDetails();
         }
+
+        private void onItemSelected(MenuItem menuItem) {
+            Fragment fragment;
+            switch (menuItem.getItemId()) {
+                case R.id.nav_scores:
+                    fragment = mMainScreenFragmentManager.getScoresFragment();
+                    break;
+                case R.id.nav_settings:
+                    fragment = mMainScreenFragmentManager.getSettingsFragment();
+                    break;
+                default:
+                    return;
+            }
+            menuItem.setChecked(false);
+            setTitle(menuItem.getTitle());
+            setFragment(fragment);
+            mDrawerLayout.closeDrawers();
+        }
+
+
+        private void onLogOutSelected() {
+            mDrawerLayout.closeDrawers();
+            mDialog.showAreYouSureYouWantToLogOutDialog();
+        }
+
 
         private void setUserDetails() {
             try {

@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.Login;
+package com.example.mf.quizzy.activities.login;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,25 +9,26 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.mf.quizzy.Listeners.AuthenticationListener;
+import com.example.mf.quizzy.listeners.AuthenticationListener;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.Activities.Register.RegisterActivity;
-import com.example.mf.quizzy.Sessions.SessionManager;
-import com.example.mf.quizzy.UsersManagement.UsersManager;
+import com.example.mf.quizzy.activities.register.RegisterActivity;
+import com.example.mf.quizzy.sessions.SessionManager;
+import com.example.mf.quizzy.usersManagement.LoginCredentials;
+import com.example.mf.quizzy.usersManagement.UsersManager;
 
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity implements AuthenticationListener {
+public class LoginActivity extends AppCompatActivity{
     private Button mLoginButton, mGoToRegisterButton;
     private TextView mEmailText, mPasswordText;
-    private SessionManager mSessionManager;
+    private UsersManager mUsersManager;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        loadSessionManager();
+        loadUsersManager();
         if (isUserLogged()) {
             goToMainActivity();
             finish();
@@ -39,8 +40,8 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
         setRegisterButtonListener();
     }
 
-    private void loadSessionManager(){
-        mSessionManager = new SessionManager(this);
+    private void loadUsersManager(){
+        mUsersManager = UsersManager.getInstance(this);
     }
 
     private void findTexts(){
@@ -62,7 +63,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
 
 
     }
-
     private void setLoginButtonListener(){
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,10 +77,19 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     private void loginUser(){
-        // todo: dagger here would help obviously...
-        UsersManager usersManager = UsersManager.getInstance(LoginActivity.this);
         try {
-            usersManager.loginUser(mEmailText.getText().toString(), mPasswordText.getText().toString());
+
+            mUsersManager.loginUser(new LoginCredentials(mEmailText.getText().toString(), mPasswordText.getText().toString()), new AuthenticationListener() {
+                @Override
+                public void onSuccess(Map<String, String> response) {
+                    goToMainActivity();
+                }
+
+                @Override
+                public void onError(String response) {
+                    displayTechnicalIssuesToast();
+                }
+            });
         } catch (Exception e) {
             displayTechnicalIssuesToast();
         }
@@ -95,7 +104,7 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     }
 
     private boolean isUserLogged() {
-        return mSessionManager.isLoggedIn();
+       return mUsersManager.isUserLoggedIn();
     }
 
     private void goToMainActivity() {
@@ -106,16 +115,6 @@ public class LoginActivity extends AppCompatActivity implements AuthenticationLi
     private void goToRegisterActivity() {
         Intent intent = new Intent(this, RegisterActivity.class);
         startActivity(intent);
-    }
-
-    @Override
-    public void onSuccess(Map<String, String> response) {
-        goToMainActivity();
-    }
-
-    @Override
-    public void onError(String response) {
-        displayInvalidCredentialsToast();
     }
 
     private void displayTechnicalIssuesToast() {

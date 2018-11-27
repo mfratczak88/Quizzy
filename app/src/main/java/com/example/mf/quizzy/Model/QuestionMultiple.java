@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Model;
+package com.example.mf.quizzy.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;

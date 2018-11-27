@@ -72,4 +72,32 @@
     <string name="yes">Yes</string>
     <string name="cancel">Cancel</string>
     <string name="on_quit_message">Are you sure you want to quit</string>
+
+    <!--Settings -->
+    <string name="level">Level</string>
+    <string-array name="level_array">
+        <item>Easy</item>
+        <item>Medium</item>
+        <item>Hard</item>
+    </string-array>
+
+    <string name="questions_per_session">Questions per session</string>
+    <string-array name="questions_per_session_array">
+        <item>3</item>
+        <item>5</item>
+        <item>10</item>
+    </string-array>
+
+    <string name="answer_time">Answer time in seconds</string>
+    <string-array name="answer_time_array">
+        <item>15</item>
+        <item>25</item>
+        <item>35</item>
+    </string-array>
+
+    <string name="save_progress">Save progress</string>
+
+    <!--Scores -->
+    <string name="category_name">Dummy category</string>
+    <string name="category_points">120</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Model;
+package com.example.mf.quizzy.model;
 
 import android.text.Html;
 
@@ -12,13 +12,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.example.mf.quizzy.Listeners.DataLoadingListener;
-import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Util.HttpUtil;
+import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.listeners.DataLoadingListener;
+import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.util.HttpUtil;
 
 public class QuestionManagerImplementation implements QuestionManager {
-
-    private static final String BASE_URL = "https://opentdb.com/api.php?amount=40&category=";
     private static final int QUESTIONS_PER_SESSION = 5;
     private String mURL;
     private List<Question> mQuestions = new ArrayList<>();
@@ -29,9 +28,9 @@ public class QuestionManagerImplementation implements QuestionManager {
     private Question mCurrentQuestion;
     private Iterator mIterator = new Iterator();
 
-    protected QuestionManagerImplementation(String categoryNumber, String categoryName, DataLoadingListener listener) {
+    protected QuestionManagerImplementation(String categoryName, DataLoadingListener listener) {
         mCategoryName = categoryName;
-        mURL = BASE_URL + categoryNumber;
+        mURL = App.getInstance().getAppConfig().getUrlForCategory(categoryName);
         mListeners.add(listener);
         loadData();
     }

@@ -1,9 +1,8 @@
-package com.example.mf.quizzy.Activities.GamePlay;
+package com.example.mf.quizzy.activities.gameplay;
 
 import android.view.View;
 import android.widget.Button;
 
-import com.example.mf.quizzy.Activities.GamePlay.AnswerFragment;
 import com.example.mf.quizzy.R;
 
 public class AnswerBooleanFragment extends AnswerFragment {

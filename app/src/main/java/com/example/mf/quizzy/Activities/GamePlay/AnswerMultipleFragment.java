@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.GamePlay;
+package com.example.mf.quizzy.activities.gameplay;
 
 import android.support.constraint.ConstraintLayout;
 import android.view.View;

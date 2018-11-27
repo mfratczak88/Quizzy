@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Activities.Results;
+package com.example.mf.quizzy.activities.results;
 
 import android.content.Context;
 import android.content.Intent;
@@ -11,13 +11,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.example.mf.quizzy.Activities.MainScreen.MainActivity;
 import com.example.mf.quizzy.App;
-import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Model.Model;
-import com.example.mf.quizzy.Model.ModelFactory;
-import com.example.mf.quizzy.Activities.GamePlay.QuestionActivity;
+import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.model.Model;
+import com.example.mf.quizzy.model.ModelFactory;
 import com.example.mf.quizzy.R;
 
 public class ResultsActivity extends AppCompatActivity {
@@ -46,7 +43,6 @@ public class ResultsActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         if (actionBar == null)
             return;
-
         actionBar.setTitle(R.string.results_action_bar_text);
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
@@ -101,7 +97,7 @@ public class ResultsActivity extends AppCompatActivity {
     }
 
     private void playAgain() {
-        startActivity(QuestionActivity.newIntent(this));
+        startActivity(App.getInstance().getGamePlayIntent(this));
     }
 
     private String getTotalPoints() {

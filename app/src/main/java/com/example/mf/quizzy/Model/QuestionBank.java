@@ -1,14 +1,10 @@
-package com.example.mf.quizzy.Model;
+package com.example.mf.quizzy.model;
 
-// Questions taken from: https://opentdb.com/
-// Specific API numbers collections corresponding to certain sets
-// are in strings.xml file
-
-import com.example.mf.quizzy.Exceptions.QuestionManagerDataLoadException;
-import com.example.mf.quizzy.Listeners.DataLoadingListener;
+import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.listeners.DataLoadingListener;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -84,8 +80,7 @@ public class QuestionBank implements Model {
 
     private void loadNewQuestionManager(String categoryName) throws QuestionManagerDataLoadException {
         try {
-            String categoryNumber = mCategories.get(categoryName);
-            mQuestionManager = new QuestionManagerImplementation(categoryNumber, categoryName, new DataLoadingListener() {
+            mQuestionManager = new QuestionManagerImplementation(categoryName, new DataLoadingListener() {
                 @Override
                 public void onDataLoaded() {
                     mListener.onDataLoaded();
@@ -98,7 +93,7 @@ public class QuestionBank implements Model {
                 }
             });
             mManagers.add(mQuestionManager);
-        } catch (ClassCastException | NullPointerException e) {
+        } catch (Exception e) {
             throw new QuestionManagerDataLoadException();
         }
 
@@ -117,18 +112,7 @@ public class QuestionBank implements Model {
     }
 
     private void setCategoriesNumbers() {
-        // @TODO make it more elegantly
-        mCategories = new HashMap<>();
-        mCategories.put("Books", "10");
-        mCategories.put("Film", "11");
-        mCategories.put("Music", "12");
-        mCategories.put("TV", "14");
-        mCategories.put("Science", "17");
-        mCategories.put("History", "23");
-        mCategories.put("Politics", "24");
-        mCategories.put("Animals", "27");
-        mCategories.put("Geo", "22");
-
+        mCategories = App.getInstance().getAppConfig().getCategories();
     }
 
 }

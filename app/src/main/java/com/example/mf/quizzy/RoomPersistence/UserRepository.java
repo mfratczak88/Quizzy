@@ -1,9 +1,7 @@
-package com.example.mf.quizzy.RoomPersistence;
+package com.example.mf.quizzy.roomPersistence;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Room;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.util.List;
 
@@ -18,42 +16,97 @@ public class UserRepository {
     }
 
     public User getUserByEmail(String email) {
-        return mUsersDatabase.daoAccess().getUserByEmail(email);
+        return mUsersDatabase.getUserDao().getUserByEmail(email);
     }
 
     public User getUserByName(String name) {
 
-        return mUsersDatabase.daoAccess().getUserByName(name);
+        return mUsersDatabase.getUserDao().getUserByName(name);
     }
 
     public User getUserById(int id) {
-        return mUsersDatabase.daoAccess().getUserById(id);
+        return mUsersDatabase.getUserDao().getUserById(id);
     }
 
     public List<User> getAllUsers() {
-        return mUsersDatabase.daoAccess().getAllUsers();
+        return mUsersDatabase.getUserDao().getAllUsers();
     }
 
     public Long insertUser(User user) {
-        return mUsersDatabase.daoAccess().insertUser(user);
+        return mUsersDatabase.getUserDao().insertUser(user);
     }
 
     public int countUsers() {
-        return mUsersDatabase.daoAccess().countUsers();
+        return mUsersDatabase.getUserDao().countUsers();
     }
 
     public void updateUser(User user) {
-        mUsersDatabase.daoAccess().updateUser(user);
+        mUsersDatabase.getUserDao().updateUser(user);
     }
 
     public void deleteUser(User user) {
-        mUsersDatabase.daoAccess().deleteUser(user);
+        mUsersDatabase.getUserDao().deleteUser(user);
     }
 
-    private static class QueryAsyncTask extends AsyncTask<String, Void, List<User>> {
-        @Override
-        protected List<User> doInBackground(String... strings) {
-            return null;
-        }
+
+    public List<Category> getAllCategories() {
+        return mUsersDatabase.getCategoryDao().getAllCategories();
     }
+
+    public Category getCategoryById(int categoryId) {
+        return mUsersDatabase.getCategoryDao().getCategoryById(categoryId);
+    }
+
+    public Category getCategoryByExternalId(String externalId) {
+        return mUsersDatabase.getCategoryDao().getCategoryByExternalId(externalId);
+    }
+
+    public Category getCategoryByName(String categoryName){
+        return mUsersDatabase.getCategoryDao().getCategoryByName(categoryName);
+    }
+
+    public int countCategories() {
+        return mUsersDatabase.getCategoryDao().countCategories();
+    }
+
+
+    public Long insertCategory(Category category) {
+        return mUsersDatabase.getCategoryDao().insertCategory(category);
+    }
+
+
+    public void updateCategory(Category category) {
+        mUsersDatabase.getCategoryDao().updateCategory(category);
+    }
+
+
+    public void deleteCategory(Category category) {
+        mUsersDatabase.getCategoryDao().deleteCategory(category);
+    }
+
+
+    public List<Points> getAllPointsForUserIdInAllCategories(int userId) {
+        return mUsersDatabase.getPointsDao().getAllPointsForUserIdInAllCategories(userId);
+    }
+
+
+    public Points getPointsForUserIdInCategory(int userId, int categoryId) {
+        return mUsersDatabase.getPointsDao().getPointsForUserIdInCategory(userId, categoryId);
+    }
+
+
+    public Long insertPoints(Points points) {
+        return mUsersDatabase.getPointsDao().insertPoints(points);
+    }
+
+
+    public void updatePoints(Points points) {
+        mUsersDatabase.getPointsDao().updatePoints(points);
+    }
+
+
+    public void deletePoints(Points points) {
+        mUsersDatabase.getPointsDao().deletePoints(points);
+    }
+
 }

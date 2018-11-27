@@ -9,7 +9,7 @@
     android:background="@drawable/gradient_main"
     android:orientation="vertical"
     android:weightSum="10"
-    tools:context=".Activities.MainScreen.MainActivity">
+    tools:context=".activities.mainScreen.MainActivity">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

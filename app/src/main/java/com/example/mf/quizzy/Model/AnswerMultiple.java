@@ -1,4 +1,4 @@
-package com.example.mf.quizzy.Model;
+package com.example.mf.quizzy.model;
 
 class AnswerMultiple implements Answer {
     boolean mCorrect;
