@@ -35,7 +35,7 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
         android:fontFamily="monospace"
-        android:gravity="start|center"
+        android:gravity="end|center"
         android:text="@string/category_points"
         android:textColor="@color/primaryTextColor"
         app:layout_constraintEnd_toEndOf="parent"

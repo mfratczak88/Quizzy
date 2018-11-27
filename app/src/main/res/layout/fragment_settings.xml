@@ -20,22 +20,6 @@
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <CheckedTextView
-        android:id="@+id/checked_text_view_save_progress"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:padding="3dp"
-        android:textAlignment="textStart"
-        android:text="@string/save_progress"
-        android:textColor="@color/primaryTextColor"
-        android:fontFamily="monospace"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textview_answer_time" />
-
     <Spinner
         android:id="@+id/spinner_questions_per_session"
         android:layout_width="0dp"
@@ -69,7 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="144dp" />
+        app:layout_constraintGuide_begin="161dp" />
 
     <TextView
         android:id="@+id/text_view_level"
@@ -115,5 +99,19 @@
         app:layout_constraintEnd_toStartOf="@+id/spinner_answer_time"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/text_view_questions_per_session" />
+
+    <CheckBox
+        android:id="@+id/checkBox_save_progress"
+        android:layout_width="153dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="monospace"
+        android:text="@string/save_progress"
+        android:textColor="@color/primaryTextColor"
+        app:layout_constraintEnd_toStartOf="@+id/guideline3"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textview_answer_time" />
 
 </android.support.constraint.ConstraintLayout>

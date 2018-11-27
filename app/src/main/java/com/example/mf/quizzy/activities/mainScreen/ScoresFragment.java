@@ -42,6 +42,7 @@ public class ScoresFragment extends Fragment {
         UsersManager usersManager = UsersManager.getInstance(getContext());
         List<UserResult> userResults = new ArrayList<>();
         Map<String, String> userCategoryAndPointsMap = usersManager.getUserCategoryAndPointsMap();
+
         for (String category : userCategoryAndPointsMap.keySet()) {
             userResults.add(new UserResult(category, userCategoryAndPointsMap.get(category)));
         }

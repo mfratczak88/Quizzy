@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.util.Log;
 
 import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.config.AppConfig;
 import com.example.mf.quizzy.listeners.AuthenticationListener;
 import com.example.mf.quizzy.roomPersistence.Category;
 import com.example.mf.quizzy.roomPersistence.Points;
@@ -99,11 +100,14 @@ public class UsersManager {
             points.setCategoryId(category.getId());
             points.setUserId(mCurrentUser.getId());
             points.setTotalPoints(amountOfPoints);
+            mUserRepository.insertPoints(points);
 
         } else {
             points.setTotalPoints(points.getTotalPoints() + amountOfPoints);
+            mUserRepository.updatePoints(points);
         }
-        mUserRepository.insertPoints(points);
+
+
     }
 
     public boolean isUserLoggedIn() {
@@ -128,6 +132,14 @@ public class UsersManager {
             }
         }
         return userPointsMap;
+    }
+
+    public void setUserSettings(AppConfig.UserSettings userSettings) {
+        mSessionManager.setUserSettings(userSettings);
+    }
+
+    public AppConfig.UserSettings getUserSettings() {
+        return mSessionManager.getUserSettings();
     }
 
     private void loadUserFromSessionManager() {
