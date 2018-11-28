@@ -20,7 +20,6 @@ public class UserRepository {
     }
 
     public User getUserByName(String name) {
-
         return mUsersDatabase.getUserDao().getUserByName(name);
     }
 
@@ -61,7 +60,7 @@ public class UserRepository {
         return mUsersDatabase.getCategoryDao().getCategoryByExternalId(externalId);
     }
 
-    public Category getCategoryByName(String categoryName){
+    public Category getCategoryByName(String categoryName) {
         return mUsersDatabase.getCategoryDao().getCategoryByName(categoryName);
     }
 
@@ -107,6 +106,29 @@ public class UserRepository {
 
     public void deletePoints(Points points) {
         mUsersDatabase.getPointsDao().deletePoints(points);
+    }
+
+    public Settings getSettingsForUserId(int userId) {
+        return mUsersDatabase.getSettingsDao().getSettingsForUserId(userId);
+    }
+
+    public Long insertSettings(Settings settings) {
+        return mUsersDatabase.getSettingsDao().insertSettings(settings);
+    }
+
+    public void insertUserAndSettings(User user, Settings settings) {
+        SettingsDao settingsDao = mUsersDatabase.getSettingsDao();
+        mUsersDatabase.getUserDao().insertUserAndSettings(user, settingsDao, settings);
+    }
+
+
+    public void updateSettings(Settings settings) {
+        mUsersDatabase.getSettingsDao().updateSettings(settings);
+    }
+
+
+    public void deleteSettings(Settings settings) {
+        mUsersDatabase.getSettingsDao().deleteSettings(settings);
     }
 
 }

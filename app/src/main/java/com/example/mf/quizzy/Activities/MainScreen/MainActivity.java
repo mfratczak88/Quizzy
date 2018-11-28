@@ -24,15 +24,14 @@ import com.example.mf.quizzy.model.ModelFactory;
 import com.example.mf.quizzy.model.Model;
 import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.sessions.SessionManager;
-
-import java.util.Map;
+import com.example.mf.quizzy.usersManagement.UsersManager;
 
 public class MainActivity extends AppCompatActivity
         implements CardViewFragment.CardViewClickListener, LoadingScreenFragment.PlayClickedListener {
     private Model mModel;
     private static final String MENU_BAR_TITLE = "Quizzy";
     private DrawerLayout mDrawerLayout;
-    private SessionManager mSessionManager;
+    private UsersManager mUsersManager;
     private NavigationView mNavigationView;
     private Dialog mDialog = new Dialog();
     private NavigationDrawer mNavigationDrawer = new NavigationDrawer();
@@ -46,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         setFragment(mMainScreenFragmentManager.getCardViewFragment());
         setActionBar();
-        setSessionManager();
+        setUsersManager();
         mNavigationDrawer.setNavigationDrawer();
         setModel();
     }
@@ -63,8 +62,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    private void setSessionManager() {
-        mSessionManager = new SessionManager(this);
+    private void setUsersManager() {
+        mUsersManager = UsersManager.getInstance(getApplicationContext());
     }
 
     private void setModel() {
@@ -73,7 +72,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void logOut() {
-        mSessionManager.logOutUser();
+        mUsersManager.logOutUser();
         startActivity(App.getInstance().getLoginIntent(this));
         finish();
     }
@@ -262,10 +261,9 @@ public class MainActivity extends AppCompatActivity
                 if (headerLayout.getId() != R.id.header_layout) {
                     return;
                 }
-                Map<String, String> userDetails = mSessionManager.getUserDetails();
 
-                ((TextView) headerLayout.findViewById(R.id.id_nav_name)).setText(userDetails.get("name"));
-                ((TextView) headerLayout.findViewById(R.id.id_nav_email)).setText(userDetails.get("email"));
+                ((TextView) headerLayout.findViewById(R.id.id_nav_name)).setText(mUsersManager.getUserName());
+                ((TextView) headerLayout.findViewById(R.id.id_nav_email)).setText(mUsersManager.getUserEmail());
 
             } catch (Exception e) {
                 Log.d(getClass().toString(), "Setting user details in the drawer error");
