@@ -8,21 +8,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.config.AppConfig;
-import com.example.mf.quizzy.roomPersistence.Settings;
-import com.example.mf.quizzy.usersManagement.UsersManager;
+import com.example.mf.quizzy.usersManagement.UserSettings;
+import com.example.mf.quizzy.usersManagement.UsersManagementFactory;
+
 
 public class SettingsFragment extends Fragment {
     private View mView;
-    private Settings mUserSettings;
+    private UserSettings mUserSettings;
     private Spinner mLevelSpinner, mQuestionsPerSessionSpinner, mAnswerTimeSpinner;
     private CheckBox mSaveProgressCheckBox;
+    private Button mSaveButton;
 
     @Nullable
     @Override
@@ -36,8 +38,7 @@ public class SettingsFragment extends Fragment {
 
     private void setUserSettings() {
         try {
-            mUserSettings = UsersManager.getInstance(getContext()).getUserSettings();
-
+            mUserSettings = UsersManagementFactory.getUsersManager(getContext()).getUserSettings();
         } catch (Exception e) {
             Log.d("SettingsFragment", "could not retrieve user settings");
         }
@@ -48,6 +49,8 @@ public class SettingsFragment extends Fragment {
         mAnswerTimeSpinner = mView.findViewById(R.id.spinner_answer_time);
         mQuestionsPerSessionSpinner = mView.findViewById(R.id.spinner_questions_per_session);
         mLevelSpinner = mView.findViewById(R.id.spinner_level);
+        mSaveButton = mView.findViewById(R.id.button_save_settings);
+        setOnSaveListener();
     }
 
     private void setUserSettingsOnScreen() {
@@ -58,7 +61,7 @@ public class SettingsFragment extends Fragment {
     }
 
     private void setCheckBoxSaveProgress() {
-        mSaveProgressCheckBox.setChecked(mUserSettings.isSaveProgress());
+        mSaveProgressCheckBox.setChecked(mUserSettings.doSaveProgress());
     }
 
     private void setLevel() {
@@ -85,6 +88,29 @@ public class SettingsFragment extends Fragment {
         } catch (Exception e) {
             Log.d("SettingsFragment", "Exception on setting spinner selection for " + userSetting);
         }
+    }
+
+    private String getSpinnerSelection(Spinner spinner) {
+        return (String) spinner.getSelectedItem();
+    }
+
+    // todo: use those settings !!!
+    private void setOnSaveListener() {
+        mSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mUserSettings.setQuestionsPerSession(Integer.parseInt(getSpinnerSelection(mQuestionsPerSessionSpinner)));
+                mUserSettings.setAnswerTimeInSeconds(Integer.parseInt(getSpinnerSelection(mAnswerTimeSpinner)));
+                mUserSettings.setLevel(getSpinnerSelection(mLevelSpinner));
+                mUserSettings.setSaveProgress(mSaveProgressCheckBox.isChecked());
+                UsersManagementFactory.getUsersManager(getContext()).saveUserSettings(mUserSettings);
+                showSettingsSavedToast();
+            }
+        });
+    }
+
+    private void showSettingsSavedToast() {
+        Toast.makeText(getContext(), "Settings saved", Toast.LENGTH_SHORT).show();
     }
 
 }

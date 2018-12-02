@@ -6,17 +6,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.usersManagement.UsersManager;
+import com.example.mf.quizzy.usersManagement.UserResultInCategory;
+import com.example.mf.quizzy.usersManagement.UsersManagementFactory;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+
 
 public class ScoresFragment extends Fragment {
     private View mView;
@@ -34,23 +35,12 @@ public class ScoresFragment extends Fragment {
         mRecyclerView = mView.findViewById(R.id.recycler_view_scores);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        mRecyclerView.setAdapter(new Adapter(getUserResultsArray(), mRecyclerView));
+        mRecyclerView.setAdapter(new Adapter(UsersManagementFactory.getUsersManager(getContext()).getUserResultsInCategoryList(), mRecyclerView));
 
-    }
-
-    private List<UserResult> getUserResultsArray() {
-        UsersManager usersManager = UsersManager.getInstance(getContext());
-        List<UserResult> userResults = new ArrayList<>();
-        Map<String, String> userCategoryAndPointsMap = usersManager.getUserCategoryAndPointsMap();
-
-        for (String category : userCategoryAndPointsMap.keySet()) {
-            userResults.add(new UserResult(category, userCategoryAndPointsMap.get(category)));
-        }
-        return userResults;
     }
 
     private class Adapter extends RecyclerView.Adapter {
-        private List<UserResult> mItems;
+        private List<UserResultInCategory> mItems;
 
         private class ViewHolder extends RecyclerView.ViewHolder {
             private TextView mCategoryName, mCategoryPoints;
@@ -62,7 +52,7 @@ public class ScoresFragment extends Fragment {
             }
         }
 
-        Adapter(List<UserResult> items, RecyclerView recyclerView) {
+        Adapter(List<UserResultInCategory> items, RecyclerView recyclerView) {
             mItems = items;
             mRecyclerView = recyclerView;
         }
@@ -79,7 +69,7 @@ public class ScoresFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int i) {
             ((ViewHolder) viewHolder).mCategoryName.setText(mItems.get(i).getCategoryName());
-            ((ViewHolder) viewHolder).mCategoryPoints.setText(mItems.get(i).getCategoryPoints());
+            ((ViewHolder) viewHolder).mCategoryPoints.setText(String.valueOf(mItems.get(i).getCategoryPoints()));
         }
 
         @Override
@@ -88,24 +78,4 @@ public class ScoresFragment extends Fragment {
         }
     }
 
-    // on purpose not trying to retrieve Objects
-    // from roomPersistence to not couple it
-    private class UserResult {
-        String categoryName, CategoryPoints;
-
-        UserResult(String categoryName, String categoryPoints) {
-            this.categoryName = categoryName;
-            CategoryPoints = categoryPoints;
-        }
-
-        String getCategoryPoints() {
-            return CategoryPoints;
-        }
-
-
-        String getCategoryName() {
-            return categoryName;
-        }
-
-    }
 }

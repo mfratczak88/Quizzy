@@ -10,6 +10,4 @@ interface BackendConnector {
         void onError(String errorCause);
     }
     void connect();
-    User getUser();
-
 }

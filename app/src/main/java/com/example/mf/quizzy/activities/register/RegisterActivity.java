@@ -17,6 +17,7 @@ import com.example.mf.quizzy.listeners.AuthenticationListener;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.usersManagement.RegistrationCredentials;
+import com.example.mf.quizzy.usersManagement.UsersManagementFactory;
 import com.example.mf.quizzy.usersManagement.UsersManager;
 import com.example.mf.quizzy.util.Validator;
 
@@ -38,9 +39,10 @@ public class RegisterActivity extends AppCompatActivity {
 
     }
 
-    private void loadUsersManager(){
-        mUsersManager = UsersManager.getInstance(this);
+    private void loadUsersManager() {
+        mUsersManager = UsersManagementFactory.getUsersManager(this);
     }
+
     private void setButtonsAndTexts() {
         mNameText = findViewById(R.id.register_name);
         mEmailText = findViewById(R.id.register_email);
@@ -108,7 +110,6 @@ public class RegisterActivity extends AppCompatActivity {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    //todo encapsulate toasts in a separate class and put it in App as inner class
     private void showTechnicalProblemsToast() {
         Toast.makeText(this, R.string.technical_issues_toast_text, Toast.LENGTH_SHORT).show();
     }

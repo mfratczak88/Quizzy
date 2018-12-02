@@ -1,6 +1,7 @@
 package com.example.mf.quizzy.config;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 
@@ -15,7 +16,8 @@ public class AppConfig {
     private Context mContext;
     private String mLoginUrl, mRegisterUrl, mApiBaseUrl;
     private Map<String, String> mCategories = new HashMap<>();
-    private UserSettings mUserDefaultSettings;
+    private UserDefaultSettings mUserDefaultSettings;
+    private boolean mLoadCategoriesToDb;
 
 
     public AppConfig(Context context) {
@@ -23,9 +25,28 @@ public class AppConfig {
         loadCategories();
         loadUrls();
         loadUserDefaultSettings();
+        loadMigrationProperties();
     }
 
-    public UserSettings getUserDefaultSettings() {
+    private void loadMigrationProperties() {
+        try {
+            Properties properties = getPropertiesForRawFile(R.raw.migration);
+            for (Map.Entry property : properties.entrySet()) {
+                if (property.getKey().equals("load_categories_to_db")) {
+                    mLoadCategoriesToDb = Boolean.parseBoolean((String) property.getValue());
+                }
+            }
+        } catch (Exception e) {
+            Log.d("App Config", "Could not load migration properties correctly");
+        }
+    }
+
+    public boolean shouldLoadCategoriesToDb() {
+        return mLoadCategoriesToDb;
+    }
+
+
+    public UserDefaultSettings getUserDefaultSettings() {
         return mUserDefaultSettings;
     }
 
@@ -50,32 +71,38 @@ public class AppConfig {
         return getApiBaseUrl() + categoryNumber;
     }
 
-    private void loadUrls() {
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.urls);
-        Properties properties = new Properties();
+    private @Nullable
+    Properties getPropertiesForRawFile(int rawResourceId) {
         try {
+            InputStream inputStream = mContext.getResources().openRawResource(rawResourceId);
+            Properties properties = new Properties();
             properties.load(inputStream);
+            return properties;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    private void loadUrls() {
+        try {
+            Properties properties = getPropertiesForRawFile(R.raw.urls);
+            for (Object url : properties.keySet()) {
+                if (url.toString().contains("login")) {
+                    mLoginUrl = properties.getProperty((String) url);
+                } else if (url.toString().contains("register")) {
+                    mRegisterUrl = properties.getProperty((String) url);
+                } else if (url.toString().contains("api")) {
+                    mApiBaseUrl = properties.getProperty((String) url);
+                }
+            }
         } catch (Exception e) {
             Log.d("App config", "Could not load URL's");
-            return;
-        }
-
-        for (Object url : properties.keySet()) {
-            if (url.toString().contains("login")) {
-                mLoginUrl = properties.getProperty((String) url);
-            } else if (url.toString().contains("register")) {
-                mRegisterUrl = properties.getProperty((String) url);
-            } else if (url.toString().contains("api")) {
-                mApiBaseUrl = properties.getProperty((String) url);
-            }
         }
     }
 
     private void loadCategories() {
-        Properties properties = new Properties();
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.categories);
         try {
-            properties.load(inputStream);
+            Properties properties = getPropertiesForRawFile(R.raw.categories);
             for (Object category : properties.keySet()) {
                 mCategories.put(category.toString(), properties.getProperty((String) category));
             }
@@ -85,11 +112,9 @@ public class AppConfig {
     }
 
     private void loadUserDefaultSettings() {
-        mUserDefaultSettings = new UserSettings();
-        Properties properties = new Properties();
-        InputStream inputStream = mContext.getResources().openRawResource(R.raw.user_settings);
         try {
-            properties.load(inputStream);
+            mUserDefaultSettings = new UserDefaultSettings();
+            Properties properties = getPropertiesForRawFile(R.raw.user_settings);
             for (Object userSetting : properties.keySet()) {
                 switch ((userSetting.toString())) {
                     case "save_progress":
@@ -111,31 +136,31 @@ public class AppConfig {
         }
     }
 
-    public static class UserSettings {
+    public static class UserDefaultSettings {
         public static final String LEVEL_EASY = "Easy";
-        public static final String LEVEL_MEDIUM="Medium";
-        public static final String LEVEL_HARD="Hard";
+        public static final String LEVEL_MEDIUM = "Medium";
+        public static final String LEVEL_HARD = "Hard";
 
         private boolean mSaveProgress;
         private String mLevel;
         private int mQuestionsPerSession;
         private int mAnswerTimeInSeconds;
 
-        public UserSettings(boolean saveProgress, String level, int questionsPerSession, int answerTimeInSeconds) {
+        public UserDefaultSettings(boolean saveProgress, String level, int questionsPerSession, int answerTimeInSeconds) {
             mSaveProgress = saveProgress;
             mLevel = level;
             mQuestionsPerSession = questionsPerSession;
             mAnswerTimeInSeconds = answerTimeInSeconds;
         }
 
-        public UserSettings() {
+        UserDefaultSettings() {
         }
 
         public boolean doSaveProgress() {
             return mSaveProgress;
         }
 
-        public void setSaveProgress(boolean saveProgress) {
+        void setSaveProgress(boolean saveProgress) {
             mSaveProgress = saveProgress;
         }
 
@@ -151,7 +176,7 @@ public class AppConfig {
             return mQuestionsPerSession;
         }
 
-        public void setQuestionsPerSession(int questionsPerSession) {
+        void setQuestionsPerSession(int questionsPerSession) {
             mQuestionsPerSession = questionsPerSession;
         }
 
@@ -159,7 +184,7 @@ public class AppConfig {
             return mAnswerTimeInSeconds;
         }
 
-        public void setAnswerTimeInSeconds(int answerTimeInSeconds) {
+        void setAnswerTimeInSeconds(int answerTimeInSeconds) {
             mAnswerTimeInSeconds = answerTimeInSeconds;
         }
     }

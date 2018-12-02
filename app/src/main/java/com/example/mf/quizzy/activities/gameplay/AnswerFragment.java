@@ -93,7 +93,6 @@ public abstract class AnswerFragment extends Fragment implements TimeOutListener
     }
 
     protected void checkAnswerAndNotifyListener(int buttonNumber) {
-        //@todo: create new class here obviously
         mAnswerShownListener.stopClock();
         Button chosenAnswerButton = mButtons.get(buttonNumber);
 
@@ -122,7 +121,7 @@ public abstract class AnswerFragment extends Fragment implements TimeOutListener
         Method[] methods = mAnswerShownListener.getClass().getMethods();
         Method methodName;
         for (Method method : methods) {
-            if (method.getName().contains("onAnswerGiven")) { //todo : change this hideous hardcode
+            if (method.getName().contains("onAnswerGiven")) {
                 methodName = method;
                 return new ListenerNotifierCommand(mAnswerShownListener, methodName, args);
             }
@@ -147,7 +146,7 @@ public abstract class AnswerFragment extends Fragment implements TimeOutListener
         Method[] methods = mAnswerShownListener.getClass().getMethods();
         Method methodName;
         for (Method method : methods) {
-            if (method.getName().contains("onAnswerShown")) { //todo : change this hideous hardcode
+            if (method.getName().contains("onAnswerShown")) {
                 methodName = method;
                 return new ListenerNotifierCommand(mAnswerShownListener, methodName, null);
             }

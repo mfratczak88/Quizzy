@@ -1,19 +1,30 @@
 package com.example.mf.quizzy.roomPersistence;
 
+import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Room;
+import android.arch.persistence.room.migration.Migration;
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import java.util.List;
 
 public class UserRepository {
-
-    public final String DB_NAME = "users_db";
-
+    static final Migration MIGRATION_13_14 = new Migration(13, 14) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+            // nothing to do here
+        }
+    };
+    final String DB_NAME = "users_db";
     private UsersDatabase mUsersDatabase;
 
     public UserRepository(Context context) {
-        mUsersDatabase = Room.databaseBuilder(context, UsersDatabase.class, DB_NAME).fallbackToDestructiveMigration().allowMainThreadQueries().build();
+        mUsersDatabase = Room.databaseBuilder(context, UsersDatabase.class, DB_NAME)
+                .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
+                .build();
     }
+
 
     public User getUserByEmail(String email) {
         return mUsersDatabase.getUserDao().getUserByEmail(email);
@@ -126,9 +137,7 @@ public class UserRepository {
         mUsersDatabase.getSettingsDao().updateSettings(settings);
     }
 
-
     public void deleteSettings(Settings settings) {
         mUsersDatabase.getSettingsDao().deleteSettings(settings);
     }
-
 }

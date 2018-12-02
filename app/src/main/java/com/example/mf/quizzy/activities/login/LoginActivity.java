@@ -1,6 +1,5 @@
 package com.example.mf.quizzy.activities.login;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,14 +11,13 @@ import android.widget.Toast;
 import com.example.mf.quizzy.listeners.AuthenticationListener;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.activities.register.RegisterActivity;
-import com.example.mf.quizzy.sessions.SessionManager;
 import com.example.mf.quizzy.usersManagement.LoginCredentials;
+import com.example.mf.quizzy.usersManagement.UsersManagementFactory;
 import com.example.mf.quizzy.usersManagement.UsersManager;
 
 import java.util.Map;
 
-public class LoginActivity extends AppCompatActivity{
+public class LoginActivity extends AppCompatActivity {
     private Button mLoginButton, mGoToRegisterButton;
     private TextView mEmailText, mPasswordText;
     private UsersManager mUsersManager;
@@ -40,30 +38,30 @@ public class LoginActivity extends AppCompatActivity{
         setRegisterButtonListener();
     }
 
-    private void loadUsersManager(){
-        mUsersManager = UsersManager.getInstance(this);
+    private void loadUsersManager() {
+        mUsersManager = UsersManagementFactory.getUsersManager(this);
     }
 
-    private void findTexts(){
+    private void findTexts() {
         mEmailText = findViewById(R.id.login_email);
         mPasswordText = findViewById(R.id.login_password);
     }
-    private void findButtons(){
+
+    private void findButtons() {
         mLoginButton = findViewById(R.id.id_login_button);
         mGoToRegisterButton = findViewById(R.id.id_back_register_button);
     }
 
-    private void setRegisterButtonListener(){
+    private void setRegisterButtonListener() {
         mGoToRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 goToRegisterActivity();
             }
         });
-
-
     }
-    private void setLoginButtonListener(){
+
+    private void setLoginButtonListener() {
         mLoginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,9 +74,8 @@ public class LoginActivity extends AppCompatActivity{
         });
     }
 
-    private void loginUser(){
+    private void loginUser() {
         try {
-
             mUsersManager.loginUser(new LoginCredentials(mEmailText.getText().toString(), mPasswordText.getText().toString()), new AuthenticationListener() {
                 @Override
                 public void onSuccess(Map<String, String> response) {
@@ -96,15 +93,15 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private boolean isInputFilledIn() {
-        return  !(mEmailText.getText().toString().isEmpty() || mPasswordText.getText().toString().isEmpty());
+        return !(mEmailText.getText().toString().isEmpty() || mPasswordText.getText().toString().isEmpty());
     }
 
     private void fillInInputToast() {
-        Toast.makeText(this, "Please fill in email and password fields", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, R.string.fill_in_input_fields_prompt, Toast.LENGTH_SHORT).show();
     }
 
     private boolean isUserLogged() {
-       return mUsersManager.isUserLoggedIn();
+        return mUsersManager.isUserLoggedIn();
     }
 
     private void goToMainActivity() {
@@ -113,15 +110,14 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     private void goToRegisterActivity() {
-        Intent intent = new Intent(this, RegisterActivity.class);
-        startActivity(intent);
+        startActivity(App.getInstance().getRegisterIntent(this));
     }
 
     private void displayTechnicalIssuesToast() {
         Toast.makeText(this, R.string.technical_issues_toast_text, Toast.LENGTH_LONG).show();
     }
 
-    private void displayInvalidCredentialsToast(){
+    private void displayInvalidCredentialsToast() {
         Toast.makeText(this, R.string.no_user_found_at_login, Toast.LENGTH_SHORT).show();
     }
 }

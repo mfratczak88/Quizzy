@@ -4,6 +4,9 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.config.AppConfig;
+
 import java.io.Serializable;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
@@ -73,5 +76,17 @@ public class Settings implements Serializable {
 
     public void setLevel(String level) {
         this.level = level;
+    }
+
+    public static Settings mapDefaultConfigSettingsToSettingsEntity() {
+        AppConfig.UserDefaultSettings userDefaultSettings = App.getInstance().getAppConfig().getUserDefaultSettings();
+        Settings settings = new Settings();
+
+        settings.setAnswerTimeInSeconds(userDefaultSettings.getAnswerTimeInSeconds());
+        settings.setQuestionsPerSession(userDefaultSettings.getQuestionsPerSession());
+        settings.setLevel(userDefaultSettings.getLevel());
+        settings.setSaveProgress(userDefaultSettings.doSaveProgress());
+
+        return settings;
     }
 }

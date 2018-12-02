@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.example.mf.quizzy.R;
+import com.example.mf.quizzy.util.RingBarWrapper;
 
 import io.netopen.hotbitmapgg.library.view.RingProgressBar;
 
@@ -29,8 +30,11 @@ public class LoadingScreenFragment extends Fragment {
     private Button mStartButton;
     private Handler mCountDownHandler;
     private int mTimeProgress = 0;
+    private int mLoadingTimeInSeconds;
     private RingProgressBar mLoadingBar;
     private static Thread mCountDownThread;
+    private RingBarWrapper mRingBarWrapper;
+
 
     @Override
     public void onAttach(Context context) {
@@ -54,7 +58,13 @@ public class LoadingScreenFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        startLoadingBar();
+//        startLoadingBar();
+        mRingBarWrapper.start();
+
+    }
+
+    void setLoadingTimeInSeconds(int loadingTimeInSeconds) {
+        mLoadingTimeInSeconds = loadingTimeInSeconds;
     }
 
     private void setOnClickStartButtonListener() {
@@ -72,18 +82,27 @@ public class LoadingScreenFragment extends Fragment {
 
     }
 
+    //todo: use RingBarWrapper
     private void prepareLoadingBar() {
-        setLoadingBar();
-        createCountDownHandler();
-        initializeProgressBar();
-        createCountDownThread();
+        mLoadingBar = mView.findViewById(R.id.loading_progress_bar);
+        mRingBarWrapper = new RingBarWrapper(mLoadingBar, mLoadingTimeInSeconds, new RingProgressBar.OnProgressListener() {
+            @Override
+            public void progressToComplete() {
+                showStartButton();
+            }
+        });
+
+//        setLoadingBar();
+//        createCountDownHandler();
+//        initializeProgressBar();
+//        createCountDownThread();
     }
 
     private void setLoadingBar() {
         mLoadingBar = mView.findViewById(R.id.loading_progress_bar);
     }
 
-    // todo: encapsulate this ringbar in a separate class
+    // todo: encapsulate this ring bar in a separate class
     private void createCountDownThread() {
         mCountDownThread = new Thread(new Runnable() {
             @Override
@@ -94,7 +113,7 @@ public class LoadingScreenFragment extends Fragment {
                         mCountDownHandler.sendEmptyMessage(0);
                     }
                 } catch (InterruptedException e) {
-                    Log.d(getClass().toString(), "Interupted ringbar");
+                    Log.d(getClass().toString(), "Interrupted ring bar");
                 }
             }
         });

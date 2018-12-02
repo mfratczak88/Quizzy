@@ -20,16 +20,20 @@ import android.widget.Toast;
 import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
 import com.example.mf.quizzy.listeners.DataLoadingListener;
 import com.example.mf.quizzy.App;
+import com.example.mf.quizzy.R;
 import com.example.mf.quizzy.model.ModelFactory;
 import com.example.mf.quizzy.model.Model;
-import com.example.mf.quizzy.R;
-import com.example.mf.quizzy.sessions.SessionManager;
+import com.example.mf.quizzy.usersManagement.UsersManagementFactory;
 import com.example.mf.quizzy.usersManagement.UsersManager;
 
-public class MainActivity extends AppCompatActivity
-        implements CardViewFragment.CardViewClickListener, LoadingScreenFragment.PlayClickedListener {
+
+public class MainActivity extends AppCompatActivity implements
+        CardViewFragment.CardViewClickListener,
+        LoadingScreenFragment.PlayClickedListener {
+
     private Model mModel;
     private static final String MENU_BAR_TITLE = "Quizzy";
+    private static final int LOADING_TIME_IN_SECONDS = 5;
     private DrawerLayout mDrawerLayout;
     private UsersManager mUsersManager;
     private NavigationView mNavigationView;
@@ -63,7 +67,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void setUsersManager() {
-        mUsersManager = UsersManager.getInstance(getApplicationContext());
+        mUsersManager = UsersManagementFactory.getUsersManager(getApplicationContext());
     }
 
     private void setModel() {
@@ -108,7 +112,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void showLoadingScreen() {
-        setFragment(new LoadingScreenFragment());
+        setFragment(MainScreenFragmentManager.geMainScreenFragmentManager().getLoadingScreenFragment(LOADING_TIME_IN_SECONDS));
     }
 
 
@@ -140,10 +144,10 @@ public class MainActivity extends AppCompatActivity
         setActionBarDefaultTitle();
     }
 
-    private void setActionBarDefaultTitle(){
-        try{
+    private void setActionBarDefaultTitle() {
+        try {
             getSupportActionBar().setTitle(MENU_BAR_TITLE);
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.d("MainActivity", "Could not set ActionBar main title");
         }
     }
@@ -164,7 +168,6 @@ public class MainActivity extends AppCompatActivity
     }
 
     private void onExit() {
-        // todo : add local and backend update here
         finish();
     }
 

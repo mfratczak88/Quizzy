@@ -41,6 +41,7 @@
     <string name="hint_password">Password</string>
     <string name="btn_login">LOGIN</string>
     <string name="btn_link_to_register">Not a member? Sign up now.</string>
+    <string name="fill_in_input_fields_prompt">Please fill in the fields</string>
 
     <!--Register-->
     <string name="hint_name">Fullname</string>
@@ -96,7 +97,7 @@
     </string-array>
 
     <string name="save_progress">Save progress</string>
-
+    <string name="save_settings">Save</string>
     <!--Scores -->
     <string name="category_name">Dummy category</string>
     <string name="category_points">120</string>

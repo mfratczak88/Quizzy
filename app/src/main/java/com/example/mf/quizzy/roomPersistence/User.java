@@ -21,9 +21,6 @@ public class User implements Serializable {
     @ColumnInfo(name = "email")
     private String email;
 
-    @ColumnInfo(name = "password")
-    private String password;
-
     @ColumnInfo(name = "created_at")
     @TypeConverters({Converter.class})
     private Date createdAt;
@@ -37,22 +34,14 @@ public class User implements Serializable {
     }
 
     @Ignore
-    public User(int id, String name, String email, String password, Date createdAt, Date modifiedAt) {
+    public User(int id, String name, String email, Date createdAt, Date modifiedAt) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.password = password;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public int getId() {
         return id;

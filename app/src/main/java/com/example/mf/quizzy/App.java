@@ -28,7 +28,6 @@ import java.util.Properties;
 public class App extends Application {
     private static RequestQueue sRequestQueue;
     private static App sInstance;
-    private Map<String, String> mCategories = new HashMap<>();
     private AppConfig mAppConfig;
 
     @Override
@@ -37,6 +36,9 @@ public class App extends Application {
         sInstance = this;
         sRequestQueue = Volley.newRequestQueue(getApplicationContext());
         mAppConfig = new AppConfig(getApplicationContext());
+        if(mAppConfig.shouldLoadCategoriesToDb()){
+            loadCategories();
+        }
     }
 
     public AppConfig getAppConfig(){
@@ -81,5 +83,14 @@ public class App extends Application {
         return new Intent(context, ResultsActivity.class);
     }
 
-
+    private void loadCategories(){
+        Map<String, String> categories = App.getInstance().getAppConfig().getCategories();
+        UserRepository userRepository = new UserRepository(getApplicationContext());
+        for(Map.Entry<String, String> entry : categories.entrySet()){
+            Category category = new Category();
+            category.setName(entry.getKey());
+            category.setExternalId(entry.getValue());
+            userRepository.insertCategory(category);
+        }
+    }
 }

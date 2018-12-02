@@ -3,7 +3,6 @@ package com.example.mf.quizzy.usersManagement;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.mf.quizzy.App;
-import com.example.mf.quizzy.config.AppConfig;
 import com.example.mf.quizzy.roomPersistence.User;
 import com.example.mf.quizzy.util.HttpUtil;
 
@@ -12,24 +11,19 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-class UserLogger  implements BackendConnector{
+class UserLogger implements BackendConnector {
 
-    private User mUser;
+    private LoginCredentials mLoginCredentials;
     private Listener mListener;
 
-     UserLogger(User user, Listener listener) {
-        this.mUser = user;
-        this.mListener = listener;
+    UserLogger(LoginCredentials loginCredentials, Listener listener) {
+        mLoginCredentials = loginCredentials;
+        mListener = listener;
     }
 
     @Override
     public void connect() {
         login();
-    }
-
-    @Override
-    public User getUser() {
-        return mUser;
     }
 
     private void login() {
@@ -50,8 +44,8 @@ class UserLogger  implements BackendConnector{
     private JSONObject createRequestBody() {
         try {
             JSONObject requestBody = new JSONObject();
-            requestBody.put("email", mUser.getEmail());
-            requestBody.put("password", mUser.getPassword());
+            requestBody.put("email", mLoginCredentials.getEmail());
+            requestBody.put("password", mLoginCredentials.getPassword());
             return requestBody;
 
         } catch (Exception e) {

@@ -3,7 +3,6 @@ package com.example.mf.quizzy.usersManagement;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.example.mf.quizzy.App;
-import com.example.mf.quizzy.config.AppConfig;
 import com.example.mf.quizzy.roomPersistence.User;
 import com.example.mf.quizzy.util.HttpUtil;
 
@@ -13,11 +12,11 @@ import org.json.JSONObject;
 
 class UserRegisterer implements BackendConnector {
 
-    private User mUser;
+    private RegistrationCredentials mRegistrationCredentials;
     private Listener mListener;
 
-    UserRegisterer(User user, Listener listener) {
-        mUser = user;
+    UserRegisterer(RegistrationCredentials registrationCredentials, Listener listener) {
+        mRegistrationCredentials = registrationCredentials;
         mListener = listener;
     }
 
@@ -26,17 +25,16 @@ class UserRegisterer implements BackendConnector {
         register();
     }
 
-    @Override
-    public User getUser() {
-        return this.mUser;
+    public RegistrationCredentials getRegistrationCredentials() {
+        return mRegistrationCredentials;
     }
 
     private JSONObject createRequestBody() throws JSONException {
 
         JSONObject requestBody = new JSONObject();
-        requestBody.put("name", mUser.getName());
-        requestBody.put("email", mUser.getEmail());
-        requestBody.put("password", mUser.getPassword());
+        requestBody.put("name", mRegistrationCredentials.getName());
+        requestBody.put("email", mRegistrationCredentials.getEmail());
+        requestBody.put("password", mRegistrationCredentials.getPassword());
         return requestBody;
     }
 

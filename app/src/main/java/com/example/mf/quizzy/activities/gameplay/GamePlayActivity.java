@@ -19,7 +19,10 @@ import com.example.mf.quizzy.listeners.*;
 import com.example.mf.quizzy.model.Model;
 import com.example.mf.quizzy.model.ModelFactory;
 import com.example.mf.quizzy.R;
+import com.example.mf.quizzy.usersManagement.UserResultInCategory;
+import com.example.mf.quizzy.usersManagement.UsersManagementFactory;
 import com.example.mf.quizzy.usersManagement.UsersManager;
+
 
 import java.util.HashMap;
 
@@ -73,7 +76,7 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
         }
     }
 
-    private void goToMain(){
+    private void goToMain() {
         startActivity(App.getInstance().getMainIntent(this));
     }
 
@@ -183,7 +186,7 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
         mAnswerHistory.put(mQuestionsCounter, answerGiven);
     }
 
-    private void incrementPointsEarned(){
+    private void incrementPointsEarned() {
         mTotalPointsEarned += 10;
     }
 
@@ -214,15 +217,19 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
         replaceFragments();
     }
 
-    private void storeUserPoints(){
-        try{
-            UsersManager.getInstance(this).addUserPoints(mModel.getCurrentQuestionManager().getCategoryName(), getTotalPointsEarned());
-        }catch(Exception e){
+    private void storeUserPoints() {
+        try {
+
+            UsersManager usersManager = UsersManagementFactory.getUsersManager(getApplicationContext());
+            UserResultInCategory resultInCategory = usersManager.getUserResultInCategory(mModel.getCurrentQuestionManager().getCategoryName());
+            resultInCategory.setCategoryPoints(getTotalPointsEarned());
+            usersManager.saveNewUserResultInCategory(resultInCategory);
+        } catch (Exception e) {
             Log.d(getClass().toString(), "Storing user points exception");
         }
     }
 
-    private int getTotalPointsEarned(){
+    private int getTotalPointsEarned() {
         return mTotalPointsEarned;
     }
 
@@ -241,7 +248,6 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
     }
 
     private void onTimeOut() {
-        //todo add something better here
         try {
             ((TimeOutListener) fetchFragmentAnswers()).onTimeOut();
         } catch (Exception e) {
