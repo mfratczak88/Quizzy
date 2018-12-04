@@ -94,7 +94,6 @@ public class SettingsFragment extends Fragment {
         return (String) spinner.getSelectedItem();
     }
 
-    // todo: use those settings !!!
     private void setOnSaveListener() {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
