@@ -12,6 +12,8 @@ Users can:
 * Set difficulty level
 * Login/Register
 
+Any feedback appreciated :)
+
 ![alt text](https://github.com/mfratczak88/Quizzy/blob/master/quizzy_screens/login.png)
 
 ![alt text](https://github.com/mfratczak88/Quizzy/blob/master/quizzy_screens/register.png)
