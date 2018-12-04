@@ -14,7 +14,7 @@ import java.util.Properties;
 
 public class AppConfig {
     private Context mContext;
-    private String mLoginUrl, mRegisterUrl, mApiBaseUrl;
+    private String mLoginUrl, mRegisterUrl, mApiBaseUrl, mCategoryUrlSnippet, mLevelCategorySnippet;
     private Map<String, String> mCategories = new HashMap<>();
     private UserDefaultSettings mUserDefaultSettings;
     private boolean mLoadCategoriesToDb;
@@ -66,9 +66,9 @@ public class AppConfig {
         return mCategories;
     }
 
-    public String getUrlForCategory(String categoryName) {
+    public String getUrlForCategoryAndLevel(String categoryName, String level) {
         String categoryNumber = mCategories.get(categoryName);
-        return getApiBaseUrl() + categoryNumber;
+        return getApiBaseUrl() + getCategoryUrlSnippet() + categoryNumber + getLevelCategorySnippet() + level.toLowerCase();
     }
 
     private @Nullable
@@ -83,6 +83,14 @@ public class AppConfig {
         }
     }
 
+    public String getCategoryUrlSnippet() {
+        return mCategoryUrlSnippet;
+    }
+
+    public String getLevelCategorySnippet() {
+        return mLevelCategorySnippet;
+    }
+
     private void loadUrls() {
         try {
             Properties properties = getPropertiesForRawFile(R.raw.urls);
@@ -93,6 +101,10 @@ public class AppConfig {
                     mRegisterUrl = properties.getProperty((String) url);
                 } else if (url.toString().contains("api")) {
                     mApiBaseUrl = properties.getProperty((String) url);
+                } else if (url.toString().contains("category")){
+                    mCategoryUrlSnippet = properties.getProperty((String) url);
+                } else if(url.toString().contains("level")){
+                    mLevelCategorySnippet = properties.getProperty((String) url);
                 }
             }
         } catch (Exception e) {

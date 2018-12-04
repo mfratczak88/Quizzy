@@ -11,9 +11,9 @@ import java.util.Map;
 public class QuestionBank implements Model {
     private static Model sInstance;
     private Map<String, String> mCategories;
-    private QuestionManagerImplementation mQuestionManager;
+    private QuestionManagerImpl mQuestionManager;
     private DataLoadingListener mListener;
-    private List<QuestionManagerImplementation> mManagers = new ArrayList<>();
+    private List<QuestionManagerImpl> mManagers = new ArrayList<>();
 
     public static Model getInstance() {
         if (sInstance == null) {
@@ -58,7 +58,7 @@ public class QuestionBank implements Model {
     }
 
     private void setRequiredQuestionManager(String categoryName) {
-        for (QuestionManagerImplementation manager : mManagers) {
+        for (QuestionManagerImpl manager : mManagers) {
             if (manager.getCategoryName().equals(categoryName))
                 mQuestionManager = manager;
         }
@@ -80,7 +80,7 @@ public class QuestionBank implements Model {
 
     private void loadNewQuestionManager(String categoryName) throws QuestionManagerDataLoadException {
         try {
-            mQuestionManager = new QuestionManagerImplementation(categoryName, new DataLoadingListener() {
+            mQuestionManager = new QuestionManagerImpl(categoryName, new DataLoadingListener() {
                 @Override
                 public void onDataLoaded() {
                     mListener.onDataLoaded();
@@ -114,5 +114,4 @@ public class QuestionBank implements Model {
     private void setCategoriesNumbers() {
         mCategories = App.getInstance().getAppConfig().getCategories();
     }
-
 }

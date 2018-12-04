@@ -15,10 +15,11 @@ import java.util.List;
 import com.example.mf.quizzy.App;
 import com.example.mf.quizzy.listeners.DataLoadingListener;
 import com.example.mf.quizzy.exceptions.QuestionManagerDataLoadException;
+import com.example.mf.quizzy.usersManagement.UserSettings;
+import com.example.mf.quizzy.usersManagement.UsersManagementFactory;
 import com.example.mf.quizzy.util.HttpUtil;
 
-public class QuestionManagerImplementation implements QuestionManager {
-    private static final int QUESTIONS_PER_SESSION = 5;
+public class QuestionManagerImpl implements QuestionManager {
     private String mURL;
     private List<Question> mQuestions = new ArrayList<>();
     private List<Question> mOneSessionQuestions = new ArrayList<>();
@@ -28,9 +29,10 @@ public class QuestionManagerImplementation implements QuestionManager {
     private Question mCurrentQuestion;
     private Iterator mIterator = new Iterator();
 
-    protected QuestionManagerImplementation(String categoryName, DataLoadingListener listener) {
+    protected QuestionManagerImpl(String categoryName, DataLoadingListener listener) {
         mCategoryName = categoryName;
-        mURL = App.getInstance().getAppConfig().getUrlForCategory(categoryName);
+        UserSettings userSettings = UsersManagementFactory.getUsersManager(App.getInstance().getApplicationContext()).getUserSettings();
+        mURL = App.getInstance().getAppConfig().getUrlForCategoryAndLevel(categoryName, userSettings.getLevel());
         mListeners.add(listener);
         loadData();
     }
@@ -94,6 +96,9 @@ public class QuestionManagerImplementation implements QuestionManager {
     private void prepareQuestions(JSONObject jsonObject) {
         try {
             createAllQuestionObjects(jsonObject);
+            if (mQuestions.size() == 0) {
+                notifyOnFailure();
+            }
             shuffleQuestions();
             addOneSessionQuestions();
             setFirstQuestion();
@@ -143,7 +148,8 @@ public class QuestionManagerImplementation implements QuestionManager {
     private void addOneSessionQuestions() throws QuestionManagerDataLoadException {
         // create questions for one session
         Question question;
-        for (int i = 0; i < QuestionManagerImplementation.QUESTIONS_PER_SESSION; i++) {
+        int questionsPerSession = UsersManagementFactory.getUsersManager(App.getInstance().getApplicationContext()).getUserSettings().getQuestionsPerSession();
+        for (int i = 0; i < questionsPerSession; i++) {
             // get the last one
             try {
                 question = mQuestions.get(mQuestions.size() - 1);
@@ -157,7 +163,7 @@ public class QuestionManagerImplementation implements QuestionManager {
 
     private void notifyOnFailure() {
         for (DataLoadingListener listener : mListeners) {
-            listener.onDataLoaded();
+            listener.onDataLoadingFailure();
         }
     }
 
@@ -180,7 +186,6 @@ public class QuestionManagerImplementation implements QuestionManager {
                     arrayList.add(jsonArray.get(i).toString());
                 }
                 return arrayList;
-
             } catch (JSONException e) {
                 return null;
             }

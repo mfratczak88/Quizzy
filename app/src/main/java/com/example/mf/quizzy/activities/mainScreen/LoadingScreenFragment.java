@@ -3,12 +3,9 @@ package com.example.mf.quizzy.activities.mainScreen;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,11 +25,8 @@ public class LoadingScreenFragment extends Fragment {
     private PlayClickedListener mListener;
     private View mView;
     private Button mStartButton;
-    private Handler mCountDownHandler;
-    private int mTimeProgress = 0;
     private int mLoadingTimeInSeconds;
     private RingProgressBar mLoadingBar;
-    private static Thread mCountDownThread;
     private RingBarWrapper mRingBarWrapper;
 
 
@@ -58,7 +52,6 @@ public class LoadingScreenFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-//        startLoadingBar();
         mRingBarWrapper.start();
 
     }
@@ -77,12 +70,6 @@ public class LoadingScreenFragment extends Fragment {
         });
     }
 
-    private void startLoadingBar() {
-        mCountDownThread.start();
-
-    }
-
-    //todo: use RingBarWrapper
     private void prepareLoadingBar() {
         mLoadingBar = mView.findViewById(R.id.loading_progress_bar);
         mRingBarWrapper = new RingBarWrapper(mLoadingBar, mLoadingTimeInSeconds, new RingProgressBar.OnProgressListener() {
@@ -92,60 +79,10 @@ public class LoadingScreenFragment extends Fragment {
             }
         });
 
-//        setLoadingBar();
-//        createCountDownHandler();
-//        initializeProgressBar();
-//        createCountDownThread();
-    }
-
-    private void setLoadingBar() {
-        mLoadingBar = mView.findViewById(R.id.loading_progress_bar);
-    }
-
-    // todo: encapsulate this ring bar in a separate class
-    private void createCountDownThread() {
-        mCountDownThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    for (int i = 0; i < 100; i++) {
-                        Thread.sleep(100);
-                        mCountDownHandler.sendEmptyMessage(0);
-                    }
-                } catch (InterruptedException e) {
-                    Log.d(getClass().toString(), "Interrupted ring bar");
-                }
-            }
-        });
-    }
-
-    private void createCountDownHandler() {
-        mCountDownHandler = new Handler(new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.what == 0) {
-                    if (mTimeProgress < 100) {
-                        mTimeProgress++;
-                        mLoadingBar.setProgress(mTimeProgress);
-                    }
-                }
-                return true;
-            }
-        });
-    }
-
-    private void initializeProgressBar() {
-        mLoadingBar.setOnProgressListener(new RingProgressBar.OnProgressListener() {
-            @Override
-            public void progressToComplete() {
-                showStartButton();
-            }
-        });
     }
 
     private void showStartButton() {
         mLoadingBar.setVisibility(View.INVISIBLE);
         mStartButton.setVisibility(View.VISIBLE);
     }
-
 }

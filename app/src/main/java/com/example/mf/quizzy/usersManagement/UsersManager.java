@@ -13,7 +13,7 @@ public interface UsersManager {
 
     boolean isUserLoggedIn();
 
-    UserSettings getUserSettings() throws Exception;
+    UserSettings getUserSettings();
 
     void saveUserSettings(UserSettings userSettings);
 
