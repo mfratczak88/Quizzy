@@ -30,13 +30,13 @@ public class SettingsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mView = inflater.inflate(R.layout.fragment_settings, container, false);
-        setUserSettings();
+        fetchCurrentUserSettings();
         setUiElements();
         setUserSettingsOnScreen();
         return mView;
     }
 
-    private void setUserSettings() {
+    private void fetchCurrentUserSettings() {
         try {
             mUserSettings = UsersManagementFactory.getUsersManager(getContext()).getUserSettings();
         } catch (Exception e) {
@@ -99,14 +99,18 @@ public class SettingsFragment extends Fragment {
         mSaveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mUserSettings.setQuestionsPerSession(Integer.parseInt(getSpinnerSelection(mQuestionsPerSessionSpinner)));
-                mUserSettings.setAnswerTimeInSeconds(Integer.parseInt(getSpinnerSelection(mAnswerTimeSpinner)));
-                mUserSettings.setLevel(getSpinnerSelection(mLevelSpinner));
-                mUserSettings.setSaveProgress(mSaveProgressCheckBox.isChecked());
+                setNewUserSettings();
                 UsersManagementFactory.getUsersManager(getContext()).saveUserSettings(mUserSettings);
                 showSettingsSavedToast();
             }
         });
+    }
+
+    private void setNewUserSettings() {
+        mUserSettings.setQuestionsPerSession(Integer.parseInt(getSpinnerSelection(mQuestionsPerSessionSpinner)));
+        mUserSettings.setAnswerTimeInSeconds(Integer.parseInt(getSpinnerSelection(mAnswerTimeSpinner)));
+        mUserSettings.setLevel(getSpinnerSelection(mLevelSpinner));
+        mUserSettings.setSaveProgress(mSaveProgressCheckBox.isChecked());
     }
 
     private void showSettingsSavedToast() {
