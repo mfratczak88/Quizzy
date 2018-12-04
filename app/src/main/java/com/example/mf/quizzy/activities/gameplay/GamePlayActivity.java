@@ -1,7 +1,5 @@
 package com.example.mf.quizzy.activities.gameplay;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -34,6 +32,7 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
     private int mQuestionsCounter;
     private Model mModel;
     private Handler mCountDownHandler;
+    private int mAnswerTimeInSeconds;
     private int mTimeProgress = 0;
     private RingProgressBar mRingProgressBar;
     private int mTotalPointsEarned = 0;
@@ -42,6 +41,7 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
 
     public GamePlayActivity() {
         mModel = ModelFactory.getFactory().getModel();
+        mAnswerTimeInSeconds = UsersManagementFactory.getUsersManager(this).getUserSettings().getAnswerTimeInSeconds();
     }
 
     @Override
@@ -120,12 +120,12 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
             @Override
             public void run() {
                 try {
-                    for (int i = 0; i < 200; i++) { // 20 seconds
-                        Thread.sleep(100);
+                    for (int i = 0; i < 100; i++) { // 20 seconds
+                        Thread.sleep(mAnswerTimeInSeconds * 10);
                         mCountDownHandler.sendEmptyMessage(0);
                     }
                 } catch (InterruptedException e) {
-
+                    Log.d(getClass().toString(), e.toString());
                 }
             }
         });
@@ -155,9 +155,6 @@ public class GamePlayActivity extends AppCompatActivity implements AnswerShownLi
         });
     }
 
-    public static Intent newIntent(Context context) {
-        return new Intent(context, GamePlayActivity.class);
-    }
 
     @Override
     public void onAnswerGiven(String answerGiven, boolean wasItCorrect) {
